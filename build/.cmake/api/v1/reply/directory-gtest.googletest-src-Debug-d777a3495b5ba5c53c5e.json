@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "/mnt/d/EMECS-Material/rptu-material/VDS/Project/VDSProject_group3/gtest/googletest-build",
+		"source" : "gtest/googletest-src"
+	}
+}
