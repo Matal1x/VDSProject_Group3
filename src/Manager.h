@@ -8,7 +8,9 @@
 #include "ManagerInterface.h"
 
 namespace ClassProject {
-
+	class Manager : public ManagerInterface {
+	
+	};
 }
 
 #endif
