@@ -14,6 +14,7 @@ namespace ClassProject {
 
     class ManagerInterface {
     public:
+        BDD_ID last_id = 0;
         virtual BDD_ID createVar(const std::string &label) = 0;
 
         virtual const BDD_ID &True() = 0;

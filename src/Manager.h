@@ -18,10 +18,16 @@ namespace ClassProject {
 		BDD_ID top_var;
 	} BDD_Var;
 
-	std::vector<BDD_Var> BDD_Var_Table;
 	
 	
 	class Manager : public ManagerInterface {
+
+		std::vector<BDD_Var> BDD_Var_Table;
+		Manager(){
+			BDD_Var_Table.push_back({0, "False", 0, 0, 0});
+			BDD_Var_Table.push_back({1, "True", 1, 1, 1});
+		}
+
 	
 	};
 }
