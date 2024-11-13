@@ -51,6 +51,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     }
     // missing last terminal case ite(f,0,1)=!f 
     // and non terminal cases.
+
 }
 
 BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
@@ -58,10 +59,10 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         x=Manager::topVar(f);
     }
     if ((f==x) || (f==1)){
-        return static_cast<BDD_ID>(1);
+        return Manager::True();
     }
     else if (f==0){
-        return static_cast<BDD_ID>(0);
+        return Manager::False();
     }
     else {
         return f;
@@ -72,10 +73,10 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
         x=Manager::topVar(f);
     }
     if ((f==x) || (f==0)){
-        return static_cast<BDD_ID>(0);
+        return Manager::False();
     }
     else if (f==1){
-        return static_cast<BDD_ID>(1);
+        return Manager::True();
     }
     else {
         return f;
@@ -86,4 +87,36 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
 size_t Manager::uniqueTableSize() {
     return Manager::BDD_Var_Table.size();
 }
+
+BDD_ID Manager::coFactorTrue(BDD_ID f){
+    return coFactorTrue(f, topVar(f));
+}
+BDD_ID Manager::coFactorFalse(BDD_ID f){
+    return coFactorFalse(f, topVar(f));
+}
+
+BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
+
+    return ite(a, b, Manager::False());
+
+}
+BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
+    return ite(a, Manager::True(), b);
+}
+BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){
+    return ite(a, neg(b), b);
+}
+BDD_ID Manager::neg(BDD_ID a){
+    return ite(a, Manager::False(), Manager::True());
+}
+BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){
+    return neg(and2(a, b));
+}
+BDD_ID Manager::nor2(BDD_ID a, BDD_ID b){
+    return neg(or2(a, b));
+}
+BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
+    return neg(xor2(a, b));
+}
+
 }
