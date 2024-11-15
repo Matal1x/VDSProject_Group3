@@ -3,8 +3,7 @@ namespace ClassProject {
 
 BDD_ID Manager::createVar(const std::string &label){
     BDD_Var new_var;
-    last_id++;
-    new_var.id = last_id;
+    new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
 
     //values of the high and low are not defined yet and depends on the label definition
 
@@ -52,6 +51,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     // missing last terminal case ite(f,0,1)=!f 
     // and non terminal cases.
 
+    // topvar of ite, high/low successor, 
 }
 
 BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){

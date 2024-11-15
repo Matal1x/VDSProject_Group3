@@ -22,7 +22,7 @@ namespace ClassProject {
 	
 	class Manager : public ManagerInterface {
 
-		BDD_ID last_id = 1;
+		
 		std::vector<BDD_Var> BDD_Var_Table;
 
 
