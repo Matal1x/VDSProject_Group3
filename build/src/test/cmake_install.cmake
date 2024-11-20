@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/d/EMECS-Material/rptu-material/VDS/Project/VDSProject_group3/src/test
+# Install script for directory: /home/wsl/VDSProject_Group3/src/test
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -1,4 +1,4 @@
-# Install script for directory: /mnt/d/EMECS-Material/rptu-material/VDS/Project/VDSProject_group3/src
+# Install script for directory: /home/wsl/VDSProject_Group3/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,7 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/mnt/d/EMECS-Material/rptu-material/VDS/Project/VDSProject_group3/build/src/test/cmake_install.cmake")
+  include("/home/wsl/VDSProject_Group3/build/src/test/cmake_install.cmake")
 
 endif()
 
