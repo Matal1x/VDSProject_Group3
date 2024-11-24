@@ -17,15 +17,13 @@ namespace ClassProject {
 		BDD_ID low;
 		BDD_ID top_var;
 	} BDD_Var;
-
-	
 	
 	class Manager : public ManagerInterface {
 
 		
 		std::vector<BDD_Var> BDD_Var_Table;
-
-
+		
+		public:
 		Manager(){
 			BDD_Var_Table.push_back({0, "False", 0, 0, 0});
 			BDD_Var_Table.push_back({1, "True", 1, 1, 1});
@@ -42,8 +40,10 @@ namespace ClassProject {
 		BDD_ID topVar(BDD_ID f);
 		BDD_ID ite(BDD_ID i, BDD_ID t, BDD_ID e);
 
-		BDD_ID coFactorTrue(BDD_ID f, BDD_ID x=-1);
-		BDD_ID coFactorFalse(BDD_ID f, BDD_ID x=-1);
+		BDD_ID coFactorTrue(BDD_ID f, BDD_ID x);
+		BDD_ID coFactorFalse(BDD_ID f, BDD_ID x);
+		BDD_ID coFactorTrue(BDD_ID f);
+		BDD_ID coFactorFalse(BDD_ID f);
 
 		size_t uniqueTableSize();
 

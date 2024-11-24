@@ -149,7 +149,21 @@ BDD_ID Manager::nor2(BDD_ID a, BDD_ID b){
     return neg(or2(a, b));
 }
 BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
-    return neg(xor2(a, b));
+ return neg(xor2(a, b));
+}
+
+std::string getTopVarName(const BDD_ID &root){
+    return "0";
+}
+
+void findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
+return;
+}
+void findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){
+    return;
+}
+void visualizeBDD(std::string filepath, BDD_ID &root){
+    return;
 }
 
 }
