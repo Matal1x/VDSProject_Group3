@@ -7,6 +7,7 @@
 
 #include "ManagerInterface.h"
 #include <vector>
+#include <iostream>
 
 namespace ClassProject {
 	typedef struct

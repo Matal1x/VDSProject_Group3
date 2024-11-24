@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src/Manager.cpp" "src/CMakeFiles/Manager.dir/Manager.cpp.o" "gcc" "src/CMakeFiles/Manager.dir/Manager.cpp.o.d"
+  "/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/Manager.cpp" "src/CMakeFiles/Manager.dir/Manager.cpp.o" "gcc" "src/CMakeFiles/Manager.dir/Manager.cpp.o.d"
   )
 
 # Targets to which this target links.

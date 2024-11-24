@@ -8,12 +8,14 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src/main.cpp" "CMakeFiles/VDSProject.dir/src/main.cpp.o" "gcc" "CMakeFiles/VDSProject.dir/src/main.cpp.o.d"
+  "/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/main.cpp" "CMakeFiles/VDSProject.dir/src/main.cpp.o" "gcc" "CMakeFiles/VDSProject.dir/src/main.cpp.o.d"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src/CMakeFiles/Manager.dir/DependInfo.cmake"
+  "/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/CMakeFiles/Manager.dir/DependInfo.cmake"
+  "/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/gtest/googletest-build/googletest/CMakeFiles/gtest.dir/DependInfo.cmake"
+  "/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/gtest/googletest-build/googletest/CMakeFiles/gtest_main.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

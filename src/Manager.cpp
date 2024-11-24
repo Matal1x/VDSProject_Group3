@@ -7,22 +7,23 @@ namespace ClassProject {
 */
 BDD_ID Manager::createVar(const std::string &label){
     BDD_Var new_var;
-
     new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
     new_var.label = label;
-    new_var.high = Manager::True();
-    new_var.low = Manager::False();
+    
+    new_var.high = this->True(); 
+    new_var.low = this->False();
     new_var.top_var = static_cast<BDD_ID>(Manager::uniqueTableSize()); 
-
+     
     BDD_Var_Table.push_back(new_var);
+   
     return new_var.id;
 }
 
 const BDD_ID &Manager::True(){
-    return static_cast<BDD_ID>(1);
+    return BDD_Var_Table[1].id;
 }
 const BDD_ID &Manager::False(){
-    return static_cast<BDD_ID>(0);
+    return BDD_Var_Table[0].id;
 }
 
 
@@ -113,6 +114,12 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
     }
 }
 
+BDD_ID Manager::coFactorTrue(BDD_ID f){
+    return 0;
+}
+BDD_ID Manager::coFactorFalse(BDD_ID f){
+    return 0;
+}
 
 size_t Manager::uniqueTableSize() {
     return Manager::BDD_Var_Table.size();
@@ -152,17 +159,17 @@ BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
  return neg(xor2(a, b));
 }
 
-std::string getTopVarName(const BDD_ID &root){
+std::string Manager::getTopVarName(const BDD_ID &root){
     return "0";
 }
 
-void findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
-return;
-}
-void findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){
+void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
     return;
 }
-void visualizeBDD(std::string filepath, BDD_ID &root){
+void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){
+    return;
+}
+void Manager::visualizeBDD(std::string filepath, BDD_ID &root){
     return;
 }
 

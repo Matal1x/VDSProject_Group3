@@ -1,4 +1,4 @@
-# Install script for directory: /home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src/test
+# Install script for directory: /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/test
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

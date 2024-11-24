@@ -64,10 +64,16 @@ TEST_F(ManagerTest, isVariable) {
 TEST_F(ManagerTest, topVar) {
     //case of itself
     BDD_ID var_a = manager.createVar("a");
+    BDD_ID var_b = manager.createVar("b");
 
     EXPECT_EQ(manager.topVar(var_a), 2);
+    EXPECT_EQ(manager.topVar(var_b), 3);
 
     //other cases()
+    BDD_ID var_e = manager.and2(var_a, var_b);
+
+    EXPECT_EQ(var_e, 4);
+    EXPECT_EQ(manager.topVar(var_e), 2);
 
 
 }

@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3"
+CMAKE_SOURCE_DIR = /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3"
+CMAKE_BINARY_DIR = /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3
 
 # Include any dependencies generated for this target.
 include src/CMakeFiles/Manager.dir/depend.make
@@ -72,16 +72,16 @@ include src/CMakeFiles/Manager.dir/flags.make
 src/CMakeFiles/Manager.dir/Manager.cpp.o: src/CMakeFiles/Manager.dir/flags.make
 src/CMakeFiles/Manager.dir/Manager.cpp.o: src/Manager.cpp
 src/CMakeFiles/Manager.dir/Manager.cpp.o: src/CMakeFiles/Manager.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/Manager.dir/Manager.cpp.o"
-	cd "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src" && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/Manager.dir/Manager.cpp.o -MF CMakeFiles/Manager.dir/Manager.cpp.o.d -o CMakeFiles/Manager.dir/Manager.cpp.o -c "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src/Manager.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/CMakeFiles/Manager.dir/Manager.cpp.o"
+	cd /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/Manager.dir/Manager.cpp.o -MF CMakeFiles/Manager.dir/Manager.cpp.o.d -o CMakeFiles/Manager.dir/Manager.cpp.o -c /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/Manager.cpp
 
 src/CMakeFiles/Manager.dir/Manager.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Manager.dir/Manager.cpp.i"
-	cd "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src" && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src/Manager.cpp" > CMakeFiles/Manager.dir/Manager.cpp.i
+	cd /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/Manager.cpp > CMakeFiles/Manager.dir/Manager.cpp.i
 
 src/CMakeFiles/Manager.dir/Manager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Manager.dir/Manager.cpp.s"
-	cd "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src" && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src/Manager.cpp" -o CMakeFiles/Manager.dir/Manager.cpp.s
+	cd /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/Manager.cpp -o CMakeFiles/Manager.dir/Manager.cpp.s
 
 # Object files for target Manager
 Manager_OBJECTS = \
@@ -93,19 +93,19 @@ Manager_EXTERNAL_OBJECTS =
 src/libManager.a: src/CMakeFiles/Manager.dir/Manager.cpp.o
 src/libManager.a: src/CMakeFiles/Manager.dir/build.make
 src/libManager.a: src/CMakeFiles/Manager.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libManager.a"
-	cd "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src" && $(CMAKE_COMMAND) -P CMakeFiles/Manager.dir/cmake_clean_target.cmake
-	cd "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src" && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Manager.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libManager.a"
+	cd /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src && $(CMAKE_COMMAND) -P CMakeFiles/Manager.dir/cmake_clean_target.cmake
+	cd /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Manager.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 src/CMakeFiles/Manager.dir/build: src/libManager.a
 .PHONY : src/CMakeFiles/Manager.dir/build
 
 src/CMakeFiles/Manager.dir/clean:
-	cd "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src" && $(CMAKE_COMMAND) -P CMakeFiles/Manager.dir/cmake_clean.cmake
+	cd /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src && $(CMAKE_COMMAND) -P CMakeFiles/Manager.dir/cmake_clean.cmake
 .PHONY : src/CMakeFiles/Manager.dir/clean
 
 src/CMakeFiles/Manager.dir/depend:
-	cd "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3" "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src" "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3" "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src" "/home/klevisresuli/Documents/second year/vds_project/VDSProject_Group3/src/CMakeFiles/Manager.dir/DependInfo.cmake" --color=$(COLOR)
+	cd /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3 && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3 /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3 /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/CMakeFiles/Manager.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : src/CMakeFiles/Manager.dir/depend
 
