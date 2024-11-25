@@ -93,6 +93,9 @@ VDSProject_EXTERNAL_OBJECTS =
 VDSProject: CMakeFiles/VDSProject.dir/src/main.cpp.o
 VDSProject: CMakeFiles/VDSProject.dir/build.make
 VDSProject: src/libManager.a
+VDSProject: lib/libgtest.a
+VDSProject: lib/libgtest_main.a
+VDSProject: lib/libgtest.a
 VDSProject: CMakeFiles/VDSProject.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/wsl/VDSProject_Group3/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable VDSProject"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/VDSProject.dir/link.txt --verbose=$(VERBOSE)

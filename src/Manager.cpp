@@ -59,8 +59,8 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     else {
         BDD_ID highSuccessor,lowSuccessor;
 
-        highSuccessor = ite(Manager::coFactorTrue(i), Manager::coFactorTrue(t), Manager::coFactorTrue(e));
-        lowSuccessor = ite(Manager::coFactorFalse(i), Manager::coFactorFalse(t), Manager::coFactorFalse(e));
+        highSuccessor = ite(Manager::coFactorTrue(i, -1), Manager::coFactorTrue(t, -1), Manager::coFactorTrue(e, -1));
+        lowSuccessor = ite(Manager::coFactorFalse(i, -1), Manager::coFactorFalse(t, -1), Manager::coFactorFalse(e, -1));
         
         if (highSuccessor == lowSuccessor){
             return highSuccessor;

@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/g++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/wsl/VDSProject_Group3/lib -I/home/wsl/VDSProject_Group3/src -I/home/wsl/VDSProject_Group3/src/test -I/home/wsl/VDSProject_Group3/src/bench -I/home/wsl/VDSProject_Group3/src/verify
+CXX_INCLUDES = -I/home/wsl/VDSProject_Group3/lib -I/home/wsl/VDSProject_Group3/src -I/home/wsl/VDSProject_Group3/src/test -I/home/wsl/VDSProject_Group3/src/bench -I/home/wsl/VDSProject_Group3/src/verify -isystem /home/wsl/VDSProject_Group3/gtest/googletest-src/googletest/include -isystem /home/wsl/VDSProject_Group3/gtest/googletest-src/googletest
 
 CXX_FLAGS =  -fPIC -std=c++17   -g
 
