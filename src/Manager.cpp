@@ -59,8 +59,8 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     else {
         BDD_ID highSuccessor,lowSuccessor;
 
-        highSuccessor = ite(Manager::coFactorTrue(i, -1), Manager::coFactorTrue(t, -1), Manager::coFactorTrue(e, -1));
-        lowSuccessor = ite(Manager::coFactorFalse(i, -1), Manager::coFactorFalse(t, -1), Manager::coFactorFalse(e, -1));
+        highSuccessor = ite(Manager::coFactorTrue(i), Manager::coFactorTrue(t), Manager::coFactorTrue(e));
+        lowSuccessor = ite(Manager::coFactorFalse(i), Manager::coFactorFalse(t), Manager::coFactorFalse(e));
         
         if (highSuccessor == lowSuccessor){
             return highSuccessor;
@@ -103,11 +103,11 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
     if (x==-1){
         x=Manager::topVar(f);
     }
-    if ((f==x) || (f==0)){
-        return Manager::False();
-    }
-    else if (f==1){
-        return Manager::True();
+    if (isConstant(f) || isConstant(x) || ){
+        // if f==1, return 1, 
+        // if f==0, return 0,
+        // if x==1 or x==0, it doesn't affect the result, so return f
+        return f;
     }
     else {
         return f;
@@ -115,10 +115,10 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
 }
 
 BDD_ID Manager::coFactorTrue(BDD_ID f){
-    return 0;
+    return coFactorTrue(f, -1);
 }
 BDD_ID Manager::coFactorFalse(BDD_ID f){
-    return 0;
+    return coFactorFalse(f, -1);
 }
 
 size_t Manager::uniqueTableSize() {
