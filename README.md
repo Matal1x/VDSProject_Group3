@@ -35,9 +35,9 @@
   <h3 align="center">
   VDS Class Project
   <br />
-  Group #X
+  Group #3
   <br />
-  Winter Semester 2022/2023
+  Winter Semester 2024/2025
   </h3>
 
   <p align="center">
@@ -204,26 +204,27 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- ROADMAP -->
 ## Roadmap
 #### Part-1
-- [ ] TODO
-- [X] DONE
+- [X] TODO
+- [] DONE
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 #### Part-2
-- [ ] TODO
-- [X] DONE
+- [X] TODO
+- [ ] DONE
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 #### Part-3
-- [ ] TODO
-- [X] DONE
+- [X] TODO
+- [ ] DONE
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- CONTACT -->
 ## Contact
 
 <!-- Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com -->
-Lucas Deutschmann & Philipp Schmitz - eit-vds-cp@rptu.de
-
+- Lucas Deutschmann & Philipp Schmitz - eit-vds-cp@rptu.de
+- Mohamed ASLAOUI - aslaoui.mohamed@edu.rptu.de 
+- Klevis Resuli - klevis.resuli@edu.rptu.de
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
