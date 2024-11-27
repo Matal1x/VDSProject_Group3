@@ -74,15 +74,24 @@ TEST_F(ManagerTest, topVar) {
     //case of itself
     BDD_ID var_a = manager.createVar("a");
     BDD_ID var_b = manager.createVar("b");
+    BDD_ID var_c = manager.createVar("c");
+    BDD_ID var_d = manager.createVar("d");
 
     EXPECT_EQ(manager.topVar(var_a), 2);
     EXPECT_EQ(manager.topVar(var_b), 3);
 
     //other cases()
-    // BDD_ID var_e = manager.and2(var_a, var_b);
+    BDD_ID aOR2 = manager.or2(var_a, var_b);
+    EXPECT_EQ(aOR2, 6);
+    EXPECT_EQ(manager.topVar(aOR2), 2);
 
-    // EXPECT_EQ(var_e, 4);
-    // EXPECT_EQ(manager.topVar(var_e), 2);
+    BDD_ID cANDd = manager.and2(var_c, var_d);
+    EXPECT_EQ(cANDd, 7);
+    EXPECT_EQ(manager.topVar(cANDd), 4);
+
+    BDD_ID f = manager.and2(aOR2, cANDd);
+    EXPECT_EQ(f, 9);
+    EXPECT_EQ(manager.topVar(f), 2);
 }
 
 TEST_F(ManagerTest, ite) {
@@ -91,13 +100,52 @@ TEST_F(ManagerTest, ite) {
     BDD_ID var_c = manager.createVar("c");
     BDD_ID var_d = manager.createVar("d");
 
-    BDD_ID ite_a = manager.ite(var_a, var_b, var_c);
-    BDD_ID ite_b = manager.ite(var_b, var_a, var_c);
-    BDD_ID ite_c = manager.ite(var_c, var_b, var_a);
+    BDD_ID ite_aORb = manager.ite(var_a, 1, var_b);
+    BDD_ID ite_cANDd = manager.ite(var_c, var_d, 0);
+    BDD_ID ite_f = manager.ite(ite_aORb, ite_cANDd, 0);
 
-    EXPECT_EQ(ite_a, 6);
-    EXPECT_EQ(ite_b, 7);
-    EXPECT_EQ(ite_c, 8);
+    EXPECT_EQ(ite_aORb, 6);
+    EXPECT_EQ(ite_cANDd, 7);
+    EXPECT_EQ(ite_f, 9);
+}
+
+
+TEST_F(ManagerTest, coFactorTrue) {
+    BDD_ID var_a = manager.createVar("a");
+    BDD_ID var_b = manager.createVar("b");
+    BDD_ID var_c = manager.createVar("c");
+    BDD_ID var_d = manager.createVar("d");
+
+    BDD_ID aORb = manager.or2(var_a, var_b);
+    BDD_ID cANDd = manager.and2(var_c, var_d);
+    BDD_ID f = manager.and2(aORb, cANDd);
+
+    EXPECT_EQ(manager.coFactorTrue(var_a, var_a), 1);
+    EXPECT_EQ(manager.coFactorTrue(var_a, 1), var_a);
+    EXPECT_EQ(manager.coFactorTrue(1, var_a), 1);
+    EXPECT_EQ(manager.coFactorTrue(var_b, var_a), var_b);
+    EXPECT_EQ(manager.coFactorTrue(var_d, var_c), var_d);
+    EXPECT_EQ(manager.coFactorTrue(aORb, var_a), 1);
+    EXPECT_EQ(manager.coFactorTrue(cANDd, var_a), cANDd);
+}
+TEST_F(ManagerTest, coFactorFalse) {
+    BDD_ID var_a = manager.createVar("a");
+    BDD_ID var_b = manager.createVar("b");
+    BDD_ID var_c = manager.createVar("c");
+    BDD_ID var_d = manager.createVar("d");
+
+    BDD_ID aORb = manager.or2(var_a, var_b);
+    BDD_ID cANDd = manager.and2(var_c, var_d);
+    BDD_ID f = manager.and2(aORb, cANDd);
+
+    EXPECT_EQ(manager.coFactorFalse(var_a, var_a), 0);
+    EXPECT_EQ(manager.coFactorFalse(var_a, 0), var_a);
+    EXPECT_EQ(manager.coFactorFalse(0, var_a), 0);
+    EXPECT_EQ(manager.coFactorFalse(var_b, var_a), var_b);
+    EXPECT_EQ(manager.coFactorFalse(var_d, var_c), var_d);
+    EXPECT_EQ(manager.coFactorFalse(aORb, var_a), var_b);
+    EXPECT_EQ(manager.coFactorFalse(cANDd, var_a), cANDd);
+    EXPECT_EQ(manager.coFactorFalse(cANDd, var_c), 0);
 }
 }
 #endif

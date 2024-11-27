@@ -59,8 +59,23 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     else {
         BDD_ID highSuccessor,lowSuccessor;
 
-        highSuccessor = ite(Manager::coFactorTrue(i), Manager::coFactorTrue(t), Manager::coFactorTrue(e));
-        lowSuccessor = ite(Manager::coFactorFalse(i), Manager::coFactorFalse(t), Manager::coFactorFalse(e));
+        bool isVariable_i = isVariable(i);
+        bool isVariable_t = isVariable(t);
+        bool isVariable_e = isVariable(e);
+
+        BDD_ID x = Manager::False();
+        if (isVariable_i){
+            x = topVar(i);
+        }
+        else if (isVariable_t){
+            x = std::min(topVar(t), x);
+        }
+        else if (isVariable_e){
+            x = std::min(topVar(e), x);
+        }
+
+        highSuccessor = ite(Manager::coFactorTrue(i, x), Manager::coFactorTrue(t, x), Manager::coFactorTrue(e, x));
+        lowSuccessor = ite(Manager::coFactorFalse(i, x), Manager::coFactorFalse(t, x), Manager::coFactorFalse(e, x));
         
         if (highSuccessor == lowSuccessor){
             return highSuccessor;
@@ -76,7 +91,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
         new_var.label = "x"+std::to_string(new_var.id);
         new_var.high = highSuccessor;
         new_var.low = lowSuccessor;
-        new_var.top_var = Manager::topVar(i);
+        new_var.top_var = x;
 
         BDD_Var_Table.push_back(new_var);
 
@@ -88,14 +103,15 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
     if (x==-1){
         x=Manager::topVar(f);
     }
-    if ((f==x) || (f==1)){
-        return Manager::True();
-    }
-    else if (f==0){
-        return Manager::False();
+    if (isConstant(f) || isConstant(x) || topVar(f) > x ){
+        // if f==1, return 1, 
+        // if f==0, return 0,
+        // if x==1 or x==0, it doesn't affect the result, so return f
+        // if topVar(f) > x, it means that x is not part of f, so return f
+        return f;
     }
     else {
-        return f;
+        return BDD_Var_Table[f].high;
     }
 }
 
@@ -103,14 +119,15 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
     if (x==-1){
         x=Manager::topVar(f);
     }
-    if (isConstant(f) || isConstant(x) || ){
+    if (isConstant(f) || isConstant(x) || topVar(f) > x ){
         // if f==1, return 1, 
         // if f==0, return 0,
         // if x==1 or x==0, it doesn't affect the result, so return f
+        // if topVar(f) > x, it means that x is not part of f, so return f
         return f;
     }
     else {
-        return f;
+        return BDD_Var_Table[f].low;
     }
 }
 
