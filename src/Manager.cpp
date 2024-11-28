@@ -100,9 +100,6 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
 }
 
 BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
-    if (x==-1){
-        x=Manager::topVar(f);
-    }
     if (isConstant(f) || isConstant(x) || topVar(f) > x ){
         // if f==1, return 1, 
         // if f==0, return 0,
@@ -116,9 +113,6 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
 }
 
 BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
-    if (x==-1){
-        x=Manager::topVar(f);
-    }
     if (isConstant(f) || isConstant(x) || topVar(f) > x ){
         // if f==1, return 1, 
         // if f==0, return 0,
@@ -132,10 +126,10 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
 }
 
 BDD_ID Manager::coFactorTrue(BDD_ID f){
-    return coFactorTrue(f, -1);
+    return BDD_Var_Table[f].high;
 }
 BDD_ID Manager::coFactorFalse(BDD_ID f){
-    return coFactorFalse(f, -1);
+    return BDD_Var_Table[f].low;
 }
 
 size_t Manager::uniqueTableSize() {
@@ -144,22 +138,13 @@ size_t Manager::uniqueTableSize() {
 
 
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
-    if (b < a){
-        return ite(b, a, Manager::False());
-    }
     return ite(a, b, Manager::False());
 
 }
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
-    if (b < a){
-        return ite(b, Manager::True(), a);
-    }
     return ite(a, Manager::True(), b);
 }
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){
-    if (b < a){ 
-        return ite(b, neg(a), a);
-    }
     return ite(a, neg(b), b);
 }
 BDD_ID Manager::neg(BDD_ID a){

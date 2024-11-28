@@ -147,5 +147,22 @@ TEST_F(ManagerTest, coFactorFalse) {
     EXPECT_EQ(manager.coFactorFalse(cANDd, var_a), cANDd);
     EXPECT_EQ(manager.coFactorFalse(cANDd, var_c), 0);
 }
+
+TEST_F(ManagerTest, neg) {
+    BDD_ID var_a = manager.createVar("a");
+    BDD_ID var_b = manager.createVar("b");
+    BDD_ID var_c = manager.createVar("c");
+    BDD_ID var_d = manager.createVar("d");
+
+    
+    BDD_ID NotA = manager.neg(var_a);
+    EXPECT_EQ(NotA, 6);
+    EXPECT_EQ(manager.topVar(NotA), 2);
+    // EXPECT_EQ(manager.BDD_Var_Table[NotA].low, 1);
+    // EXPECT_EQ(manager.BDD_Var_Table[NotA].high, 0);
+
+
 }
+}
+
 #endif
