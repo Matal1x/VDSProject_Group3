@@ -2,3 +2,12 @@ gtest/
 doc/VDSCP_Part_1.pdf
 build/
 .vscode/
+CMakeFiles/
+cmake_install.cmake
+CCMakeCache.txt
+CMakeLists.txt.in
+VDSProject
+*.o
+*.a
+*.so
+*.d

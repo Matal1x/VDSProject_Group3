@@ -8,6 +8,7 @@
 #include "ManagerInterface.h"
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 namespace ClassProject {
 	typedef struct

@@ -119,18 +119,17 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         // we need to call the function ite in a way that it returns a.
         // we also need to keep in mind the cases the function given in the PDF
         // and that they are still working.
-        // return ite(topVar(f), BDD_Var_Table[x].high, BDD_Var_Table[x].low);
+        return ite(topVar(f), BDD_Var_Table[x].high, BDD_Var_Table[x].low);
         // this works for this case but since the False variation which is
         // built on this model doesn't yield correct values than it is not correct.
         // in case we want ite to return a;
         // we have:
         // ite(something=1, something=a, whatever)
-        // ite(something=0, whatever, something=a)
+        // ite(something=0, whatever, something=a}
         // ite(something, something=a, something=a)
         // ite(something=a, something=1, something=1)
         // since we are using topvar(f) then 
         // the first two cases are impossible. (explanation in False variant)
-        return ite(topVar(f), coFactorTrue(BDD_Var_Table[f].high, x), coFactorTrue(BDD_Var_Table[f].low, x));
     }
 }
 
@@ -162,8 +161,7 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
         // becasue topVar(f) with f=a*b can never be 0 or 1.
         // which means the other 2 parameters need to be 0 in this case.
         // and most likely diffirent than each other. as in, their calculation is diffirent.
-        //return ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high);
-        return ite(topVar(f), coFactorFalse(BDD_Var_Table[f].high, x), coFactorFalse(BDD_Var_Table[f].low, x));
+        return ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high);
     }
 }
 
@@ -203,18 +201,63 @@ BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
  return neg(xor2(a, b));
 }
 
-std::string Manager::getTopVarName(const BDD_ID &root){
-    return "0";
+std::string Manager::getTopVarName(const BDD_ID &root) {
+    return BDD_Var_Table[topVar(root)].label;
 }
 
 void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
-    return;
+    
+    if(BDD_Var_Table[root].id==0 || BDD_Var_Table[root].id==1){
+        return;
+    }
+    else {
+       
+        nodes_of_root.insert(BDD_Var_Table[root].id);
+        findNodes(BDD_Var_Table[root].high, nodes_of_root);
+        findNodes(BDD_Var_Table[root].low, nodes_of_root);
+    }
 }
+
 void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){
-    return;
+    std::set<BDD_ID> nodes_of_root;
+    findNodes(root, nodes_of_root);
+    for (const auto &node : nodes_of_root){
+       
+            vars_of_root.insert(topVar(node));
+    
+    }
 }
-void Manager::visualizeBDD(std::string filepath, BDD_ID &root){
-    return;
+
+void Manager::visualizeBDD(std::string filepath, BDD_ID &root) {
+    
+    std::ofstream file(filepath);
+    if (!file.is_open()) {
+        std::cerr << "Error opening file: " << filepath << std::endl;
+        return;
+    }
+
+    file << "digraph BDD {" << std::endl;
+    file << "    node [shape=circle];" << std::endl;
+
+    std::set<BDD_ID> nodes;
+    BDD_ID high,low;
+    findNodes(root, nodes);
+
+    for (const auto &node : nodes) {
+        
+            high = BDD_Var_Table[node].high;
+            low = BDD_Var_Table[node].low;
+            file << "    " << node << " [label=\"" << BDD_Var_Table[node].label << "\"];" << std::endl;
+            file << "    " << node << " -> " << high << " [label=\"" <<BDD_Var_Table[high].label<< "\"];" << std::endl;
+            file << "    " << node << " -> " << low << " [label=\"" <<BDD_Var_Table[high].label<< "\"];" << std::endl;
+        
+    }
+
+    file << "    0 [shape=box, label=\"0\"];" << std::endl;
+    file << "    1 [shape=box, label=\"1\"];" << std::endl;
+
+    file << "}" << std::endl;
+    file.close();
 }
 
 }
