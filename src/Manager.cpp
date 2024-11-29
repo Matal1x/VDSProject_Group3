@@ -108,7 +108,7 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         return f;
     }
     else {
-        return BDD_Var_Table[f].high;
+        return ite(topVar(f), BDD_Var_Table[x].high, BDD_Var_Table[x].low);
     }
 }
 
@@ -121,7 +121,7 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
         return f;
     }
     else {
-        return BDD_Var_Table[f].low;
+        return ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high);
     }
 }
 
