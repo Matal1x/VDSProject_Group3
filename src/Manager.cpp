@@ -108,7 +108,28 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         return f;
     }
     else {
+        if (topVar(f) == x){
+            // just like CoFactorTrue(f)
+            return BDD_Var_Table[f].high;
+        }
+        // if topVar(f) < x
+
+
+        // the case of CoFactorTrue(a*b, b)= a
+        // we need to call the function ite in a way that it returns a.
+        // we also need to keep in mind the cases the function given in the PDF
+        // and that they are still working.
         return ite(topVar(f), BDD_Var_Table[x].high, BDD_Var_Table[x].low);
+        // this works for this case but since the False variation which is
+        // built on this model doesn't yield correct values than it is not correct.
+        // in case we want ite to return a;
+        // we have:
+        // ite(something=1, something=a, whatever)
+        // ite(something=0, whatever, something=a)
+        // ite(something, something=a, something=a)
+        // ite(something=a, something=1, something=1)
+        // since we are using topvar(f) then 
+        // the first two cases are impossible. (explanation in False variant)
     }
 }
 
@@ -121,6 +142,25 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
         return f;
     }
     else {
+        if (topVar(f) == x){
+            // just like CoFactorFalse(f)
+            return BDD_Var_Table[f].low;
+        }
+        // if topVar(f) < x
+
+
+        // in case CoFactorFalse(a*b, b)= 0, 
+        // ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high)
+        // is false as it will return !a instead of 0.
+        // thus returning 0 with ite would result in something like:
+        // ite(something, something=0,something=0)
+        // ite(something=1. something=0, whatever)
+        // ite(something=0, whatever, something=0).
+        // if we take into consideration that we are using topVar(f)
+        // then it can only be the ite of the first case.
+        // becasue topVar(f) with f=a*b can never be 0 or 1.
+        // which means the other 2 parameters need to be 0 in this case.
+        // and most likely diffirent than each other. as in, their calculation is diffirent.
         return ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high);
     }
 }
