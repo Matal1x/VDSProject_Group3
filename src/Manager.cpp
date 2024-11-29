@@ -119,7 +119,7 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         // we need to call the function ite in a way that it returns a.
         // we also need to keep in mind the cases the function given in the PDF
         // and that they are still working.
-        return ite(topVar(f), BDD_Var_Table[x].high, BDD_Var_Table[x].low);
+        // return ite(topVar(f), BDD_Var_Table[x].high, BDD_Var_Table[x].low);
         // this works for this case but since the False variation which is
         // built on this model doesn't yield correct values than it is not correct.
         // in case we want ite to return a;
@@ -130,6 +130,7 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         // ite(something=a, something=1, something=1)
         // since we are using topvar(f) then 
         // the first two cases are impossible. (explanation in False variant)
+        return ite(topVar(f), coFactorTrue(BDD_Var_Table[f].high, x), coFactorTrue(BDD_Var_Table[f].low, x));
     }
 }
 
@@ -161,7 +162,8 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
         // becasue topVar(f) with f=a*b can never be 0 or 1.
         // which means the other 2 parameters need to be 0 in this case.
         // and most likely diffirent than each other. as in, their calculation is diffirent.
-        return ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high);
+        //return ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high);
+        return ite(topVar(f), coFactorFalse(BDD_Var_Table[f].high, x), coFactorFalse(BDD_Var_Table[f].low, x));
     }
 }
 
