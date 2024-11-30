@@ -166,6 +166,12 @@ TEST_F(ManagerTest, coFactorFalse) {
     EXPECT_EQ(manager.coFactorFalse(aORb, var_a), var_b);
     EXPECT_EQ(manager.coFactorFalse(cANDd, var_a), cANDd);
     EXPECT_EQ(manager.coFactorFalse(cANDd, var_c), 0);
+
+    // Non-terminal
+    // both subgraphs rely on c.
+    // so if c=0, then f=0.
+    EXPECT_EQ(manager.coFactorFalse(f, var_c), 0);
+
 }
 
 TEST_F(ManagerTest, neg) {

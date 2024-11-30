@@ -119,7 +119,7 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         // we need to call the function ite in a way that it returns a.
         // we also need to keep in mind the cases the function given in the PDF
         // and that they are still working.
-        return ite(topVar(f), BDD_Var_Table[x].high, BDD_Var_Table[x].low);
+        //return ite(topVar(f), BDD_Var_Table[x].high, BDD_Var_Table[x].low);
         // this works for this case but since the False variation which is
         // built on this model doesn't yield correct values than it is not correct.
         // in case we want ite to return a;
@@ -130,6 +130,27 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         // ite(something=a, something=1, something=1)
         // since we are using topvar(f) then 
         // the first two cases are impossible. (explanation in False variant)
+
+        /*
+            Let's take the case of f=(a+b)*c*d
+            cofactorTrue(f, c) = a+b*d
+            if we take into consideration that we are using topVar(f)
+            then we have to implement it and the ite function
+            
+            if we look at the function f, we can have two sub graphs: a*c*d and b*c*d
+            if we cofactorTrue the first one, we get a*d
+            if we cofactorTrue the second one, we get b*d
+            at the end we get a*d+b*d which is a+b*d
+            in this example both subgraphs contain c.
+            so if a is true, then we would only need to look at the right sub graph.
+            but if it is false, then we would need to look at the left sub graph which is b*c*d.
+            the point is, both could contain c.
+            if we write this in 'ite language', we get:
+            if a is true then look at the right subgraph which is c*d and cofactor it wrt c,
+            else look at the left subgraph which is b*c*d and cofactor it wrt to c.
+            thus we get:
+        */
+            return ite(topVar(f), coFactorTrue(BDD_Var_Table[f].high, x), coFactorTrue(BDD_Var_Table[f].low, x));
     }
 }
 
@@ -161,7 +182,13 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
         // becasue topVar(f) with f=a*b can never be 0 or 1.
         // which means the other 2 parameters need to be 0 in this case.
         // and most likely diffirent than each other. as in, their calculation is diffirent.
-        return ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high);
+       // return ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high);
+
+       /*
+        Basically the same concept as in the cofactorTrue function.
+        explanation is there.
+       */
+        return ite(topVar(f), coFactorFalse(BDD_Var_Table[f].high, x), coFactorFalse(BDD_Var_Table[f].low, x));
     }
 }
 
