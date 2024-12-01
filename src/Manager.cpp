@@ -88,11 +88,10 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
         }
         BDD_Var new_var;
         new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
-        new_var.label = "x"+std::to_string(new_var.id);
+        new_var.label = "temp";
         new_var.high = highSuccessor;
         new_var.low = lowSuccessor;
         new_var.top_var = x;
-
         BDD_Var_Table.push_back(new_var);
 
         return new_var.id;
@@ -205,33 +204,56 @@ size_t Manager::uniqueTableSize() {
 
 
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
-    return ite(a, b, Manager::False());
+    BDD_ID aANDb = ite(a, b, Manager::False());
+    BDD_Var_Table[aANDb].label = BDD_Var_Table[a].label + " * " + BDD_Var_Table[b].label;
+    return aANDb;
 
 }
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
-    return ite(a, Manager::True(), b);
+    BDD_ID aORb = ite(a, Manager::True(), b);
+    BDD_Var_Table[aORb].label = BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label;
+    return aORb;
 }
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){
-    return ite(a, neg(b), b);
+    BDD_ID aXORb = ite(a, neg(b), b);
+    BDD_Var_Table[aXORb].label = BDD_Var_Table[a].label + " ^ " + BDD_Var_Table[b].label;
+    return aXORb;
 }
 BDD_ID Manager::neg(BDD_ID a){
-    return ite(a, Manager::False(), Manager::True());
+    
+    BDD_ID aNEG = ite(a, Manager::False(), Manager::True());
+    BDD_Var_Table[aNEG].label = "!" + BDD_Var_Table[a].label;
+    return aNEG;
 }
 BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){
 
-    return neg(and2(a, b));
+    BDD_ID aNANDb = neg(and2(a, b));
+    BDD_Var_Table[aNANDb].label = "(" + BDD_Var_Table[a].label + " * " + BDD_Var_Table[b].label + ")'";
+    return aNANDb;
+
 }
 BDD_ID Manager::nor2(BDD_ID a, BDD_ID b){
-    return neg(or2(a, b));
+    BDD_ID aNORb = neg(or2(a, b));
+    BDD_Var_Table[aNORb].label = "(" + BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label + ")'";
+    return aNORb;
 }
 BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
- return neg(xor2(a, b));
+ 
+    BDD_ID aXNORb = neg(xor2(a, b));
+    BDD_Var_Table[aXNORb].label = "(" + BDD_Var_Table[a].label + " ^ " + BDD_Var_Table[b].label + ")'";
+    return aXNORb;
 }
 
 std::string Manager::getTopVarName(const BDD_ID &root) {
     return BDD_Var_Table[topVar(root)].label;
 }
+/*
+takes a root id and writes to nodes_of_root the nodes that are part of the BDD that has id as root.
+treated like  recursive function where if the id is 0 or 1, it returns.
+else it adds itself id to the set and calls itself with the high and low successors.
 
+0 and 1 are not added to the set
+*/
 void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
     
     if(BDD_Var_Table[root].id==0 || BDD_Var_Table[root].id==1){
@@ -245,16 +267,27 @@ void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
     }
 }
 
+/*  
+    takes a root id and writes to vars_of_root the variables that are part of the BDD that has id as root.
+    calls findNodes to get the nodes of the BDD and then adds the topVar of each node to the set since we need only the vars.
+*/
+
 void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){
     std::set<BDD_ID> nodes_of_root;
     findNodes(root, nodes_of_root);
     for (const auto &node : nodes_of_root){
        
-            vars_of_root.insert(topVar(node));
+        vars_of_root.insert(topVar(node));
     
     }
 }
 
+/*
+    writes the BDD to a file in the dot format.
+    after the header is written, the nodes are found using findNodes.
+    then the nodes are written with their labels and the high and low successors
+    in the end the 0 and 1 nodes are written.
+*/
 void Manager::visualizeBDD(std::string filepath, BDD_ID &root) {
     
     std::ofstream file(filepath);
