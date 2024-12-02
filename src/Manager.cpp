@@ -19,26 +19,57 @@ BDD_ID Manager::createVar(const std::string &label){
     return new_var.id;
 }
 
+/*
+    Returns the refeerence to the 'True' Terminal node.
+*/
 const BDD_ID &Manager::True(){
     return BDD_Var_Table[1].id;
 }
+
+/*
+    Returns the refeerence to the 'False' Terminal node.
+*/
 const BDD_ID &Manager::False(){
     return BDD_Var_Table[0].id;
 }
 
-
+/*
+    Checks if a given node is Terminal (Constant) or not and returns 
+    the corresponding boolean value.
+*/
 bool Manager::isConstant(BDD_ID f){
     return ( (f==Manager::False()) || (f==Manager::True()));
 }
+
+/*
+    Checks if a given node is Non-Terminal (Variable) or not and returns 
+    the corresponding boolean value.
+*/
 bool Manager::isVariable(BDD_ID f){
     return ( (f!=Manager::False()) && (f!=Manager::True()));
 }
 
-// Concept needs to be verified
+/*
+    Returns the top variable of a given node.
+*/
 BDD_ID Manager::topVar(BDD_ID f){
-    return BDD_Var_Table[f].top_var; // ******* Wrong, it should be set diffirently 
+    return BDD_Var_Table[f].top_var;  
 }
-// Incomplete
+
+
+
+
+/*
+    The if-then-else function.
+    It takes 3 BDD_IDs and returns the result of the ite function.
+    First, it checks for terminal cases and returns the corresponding value.
+    Then, if it is not a terminal case, it takes the minimum of the top variables of the 3 BDD_IDs.
+    Then it calculates the high and low successors using CoFactorTrue and CofactorFalse respectively within
+    the ite function recursively and checks if they are equal.
+    if they are, it returns the high successor (or low as it doesn't matter).
+    if they are not equal, it checks if the result is already in the BDD_Var_Table and returns it.
+    if it is not, it creates a new entry in the BDD_Var_Table and returns the id of the new entry.     
+*/
 BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     if (i==1){
         return t;
@@ -50,12 +81,8 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
         return i;
     }
     else if (t==e){
-        return t; // Or e
-    }
-    // missing last terminal case ite(f,0,1)=!f 
-    // and non terminal cases.
-
-    // topvar of ite, high/low successor, 
+        return t; 
+    } 
     else {
         BDD_ID highSuccessor,lowSuccessor;
 
@@ -100,15 +127,10 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
 
 BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
     if (isConstant(f) || isConstant(x) || topVar(f) > x ){
-        // if f==1, return 1, 
-        // if f==0, return 0,
-        // if x==1 or x==0, it doesn't affect the result, so return f
-        // if topVar(f) > x, it means that x is not part of f, so return f
         return f;
     }
     else {
         if (topVar(f) == x){
-            // just like CoFactorTrue(f)
             return BDD_Var_Table[f].high;
         }
         // if topVar(f) < x
@@ -191,40 +213,81 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
     }
 }
 
+/*
+    One Parameter Version of CoFactorTrue.
+    returns the high successor of the given node.
+*/
 BDD_ID Manager::coFactorTrue(BDD_ID f){
     return BDD_Var_Table[f].high;
 }
+
+/*
+    One Parameter Version of CoFactorFalse.
+    returns the low successor of the given node.
+*/
 BDD_ID Manager::coFactorFalse(BDD_ID f){
     return BDD_Var_Table[f].low;
 }
 
+/*
+    Returns the size of the BDD_Var_Table.
+    ie. the number of unique nodes in the BDD.
+*/
 size_t Manager::uniqueTableSize() {
     return Manager::BDD_Var_Table.size();
 }
 
-
+/*
+    Basic logic AND function implementation using ite.
+    Either creates a new entry in the table if it doesn't already exist
+    or returns the id of the existing entry.
+*/
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
     BDD_ID aANDb = ite(a, b, Manager::False());
     BDD_Var_Table[aANDb].label = BDD_Var_Table[a].label + " * " + BDD_Var_Table[b].label;
     return aANDb;
 
 }
+
+/*
+    Basic logic OR function implementation using ite.
+    Either creates a new entry in the table if it doesn't already exist
+    or returns the id of the existing entry.
+*/
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
     BDD_ID aORb = ite(a, Manager::True(), b);
     BDD_Var_Table[aORb].label = BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label;
     return aORb;
 }
+
+/*
+    Basic logic XOR function implementation using ite.
+    Either creates a new entry in the table if it doesn't already exist
+    or returns the id of the existing entry.
+*/
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){
     BDD_ID aXORb = ite(a, neg(b), b);
     BDD_Var_Table[aXORb].label = BDD_Var_Table[a].label + " ^ " + BDD_Var_Table[b].label;
     return aXORb;
 }
+
+/*
+    Basic logic NOT function implementation using ite.
+    Either creates a new entry in the table if it doesn't already exist
+    or returns the id of the existing entry.
+*/
 BDD_ID Manager::neg(BDD_ID a){
     
     BDD_ID aNEG = ite(a, Manager::False(), Manager::True());
     BDD_Var_Table[aNEG].label = "!" + BDD_Var_Table[a].label;
     return aNEG;
 }
+
+/*
+    Basic logic NAND function implementation using neg and and2 functions.
+    Either creates a new entry in the table if it doesn't already exist
+    or returns the id of the existing entry.
+*/
 BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){
 
     BDD_ID aNANDb = neg(and2(a, b));
@@ -232,11 +295,24 @@ BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){
     return aNANDb;
 
 }
+
+/*
+    Basic logic NOR function implementation using neg and or2 functions.
+    Either creates a new entry in the table if it doesn't already exist
+    or returns the id of the existing entry.
+*/
 BDD_ID Manager::nor2(BDD_ID a, BDD_ID b){
     BDD_ID aNORb = neg(or2(a, b));
     BDD_Var_Table[aNORb].label = "(" + BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label + ")'";
     return aNORb;
 }
+
+
+/*
+    Basic logic XNOR function implementation using neg and xor2 functions.
+    Either creates a new entry in the table if it doesn't already exist
+    or returns the id of the existing entry.
+*/
 BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
  
     BDD_ID aXNORb = neg(xor2(a, b));
@@ -244,15 +320,19 @@ BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
     return aXNORb;
 }
 
+
+/*
+    Returns the label of the top variable of the given node.
+*/
 std::string Manager::getTopVarName(const BDD_ID &root) {
     return BDD_Var_Table[topVar(root)].label;
 }
-/*
-takes a root id and writes to nodes_of_root the nodes that are part of the BDD that has id as root.
-treated like  recursive function where if the id is 0 or 1, it returns.
-else it adds itself id to the set and calls itself with the high and low successors.
 
-0 and 1 are not added to the set
+/*
+    Takes a root id and writes to nodes_of_root the nodes that are part of the BDD that has id as root.
+    treated like  recursive function where if the id is 0 or 1, it returns.
+    else it adds itself id to the set and calls itself with the high and low successors.
+    0 and 1 are not added to the set
 */
 void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
     

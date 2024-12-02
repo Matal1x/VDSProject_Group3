@@ -189,6 +189,62 @@ TEST_F(ManagerTest, neg) {
 
 
 }
+TEST_F(ManagerTest, getoptVarName) {
+    BDD_ID var_a = manager.createVar("a");
+    BDD_ID var_b = manager.createVar("b");
+    BDD_ID var_c = manager.createVar("c");
+    BDD_ID var_d = manager.createVar("d");
+
+    BDD_ID aANDb = manager.and2(var_a, var_b);
+    std::string label = manager.getTopVarName(aANDb);
+    EXPECT_EQ(label, "a");
+
+}
+
+TEST_F (ManagerTest, findNodes) {
+
+    BDD_ID a = manager.createVar("a");
+    BDD_ID b = manager.createVar("b");
+    BDD_ID c = manager.createVar("c");
+    BDD_ID d = manager.createVar("d");
+    BDD_ID aORb = manager.or2(a,b);
+    BDD_ID cANDd = manager.and2(c,d);
+    BDD_ID f = manager.and2(aORb,cANDd);
+    std::set<BDD_ID> nodes_of_root, predefined_nodes_of_root;
+    predefined_nodes_of_root = {5, 7, 8, 9};
+    manager.findNodes(f, nodes_of_root);
+
+    EXPECT_EQ(predefined_nodes_of_root, nodes_of_root);
+}
+
+TEST_F (ManagerTest, findVars) {
+
+    BDD_ID a = manager.createVar("a");
+    BDD_ID b = manager.createVar("b");
+    BDD_ID c = manager.createVar("c");
+    BDD_ID d = manager.createVar("d");
+    BDD_ID aORb = manager.or2(a,b);
+    BDD_ID cANDd = manager.and2(c,d);
+    BDD_ID f = manager.and2(aORb,cANDd);
+    std::set<BDD_ID> vars_of_root, predefined_vars_of_root;
+    predefined_vars_of_root = {2,3 , 4, 5};
+    manager.findVars(f, vars_of_root);
+
+    EXPECT_EQ(predefined_vars_of_root, vars_of_root);
+}
+
+TEST_F (ManagerTest, visualizeBDD) {
+    BDD_ID a = manager.createVar("a");
+    BDD_ID b = manager.createVar("b");
+    BDD_ID c = manager.createVar("c");
+    BDD_ID d = manager.createVar("d");
+    BDD_ID aORb = manager.or2(a,b);
+    BDD_ID cANDd = manager.and2(c,d);
+    BDD_ID f = manager.and2(aORb,cANDd);
+    std::string filepath = "bdd.dot";
+    manager.visualizeBDD(filepath, f);
+}
+
 }
 
 #endif
