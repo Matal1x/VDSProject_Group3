@@ -1,17 +1,17 @@
 digraph BDD {
     node [shape=circle];
     5 [label="d"];
-    5 -> 1 [label="True"];
-    5 -> 0 [label="True"];
-    7 [label="c * d"];
-    7 -> 5 [label="d"];
-    7 -> 0 [label="d"];
-    8 [label="temp"];
-    8 -> 7 [label="c * d"];
-    8 -> 0 [label="c * d"];
-    9 [label="a + b * c * d"];
-    9 -> 7 [label="c * d"];
-    9 -> 8 [label="c * d"];
+    5 -> 1 [style=solid];
+    5 -> 0 [style=dotted];
+    7 [label="c"];
+    7 -> 5 [style=solid];
+    7 -> 0 [style=dotted];
+    8 [label="b"];
+    8 -> 7 [style=solid];
+    8 -> 0 [style=dotted];
+    9 [label="a"];
+    9 -> 7 [style=solid];
+    9 -> 8 [style=dotted];
     0 [shape=box, label="0"];
     1 [shape=box, label="1"];
 }

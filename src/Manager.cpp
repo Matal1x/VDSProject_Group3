@@ -115,7 +115,7 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
         }
         BDD_Var new_var;
         new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
-        new_var.label = "temp";
+        new_var.label = "id"+std::to_string(new_var.id);
         new_var.high = highSuccessor;
         new_var.low = lowSuccessor;
         new_var.top_var = x;
@@ -244,7 +244,7 @@ size_t Manager::uniqueTableSize() {
 */
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
     BDD_ID aANDb = ite(a, b, Manager::False());
-    BDD_Var_Table[aANDb].label = BDD_Var_Table[a].label + " * " + BDD_Var_Table[b].label;
+    BDD_Var_Table[aANDb].label = "(" + BDD_Var_Table[a].label + " * " + BDD_Var_Table[b].label + ")";
     return aANDb;
 
 }
@@ -256,7 +256,7 @@ BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
 */
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
     BDD_ID aORb = ite(a, Manager::True(), b);
-    BDD_Var_Table[aORb].label = BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label;
+    BDD_Var_Table[aORb].label = "(" + BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label + ")";
     return aORb;
 }
 
@@ -267,7 +267,7 @@ BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
 */
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){
     BDD_ID aXORb = ite(a, neg(b), b);
-    BDD_Var_Table[aXORb].label = BDD_Var_Table[a].label + " ^ " + BDD_Var_Table[b].label;
+    BDD_Var_Table[aXORb].label = "(" + BDD_Var_Table[a].label + " ^ " + BDD_Var_Table[b].label + ")";
     return aXORb;
 }
 
@@ -365,7 +365,8 @@ void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){
 /*
     writes the BDD to a file in the dot format.
     after the header is written, the nodes are found using findNodes.
-    then the nodes are written with their labels and the high and low successors
+    then the nodes are written with their top variable as label.
+    dotted lines are used for low successors and solid lines for high successors.
     in the end the 0 and 1 nodes are written.
 */
 void Manager::visualizeBDD(std::string filepath, BDD_ID &root) {
@@ -384,12 +385,12 @@ void Manager::visualizeBDD(std::string filepath, BDD_ID &root) {
     findNodes(root, nodes);
 
     for (const auto &node : nodes) {
+           
+            file << "    " << node << " [label=\"" << BDD_Var_Table[BDD_Var_Table[node].top_var].label << "\"];" << std::endl;
         
-            high = BDD_Var_Table[node].high;
-            low = BDD_Var_Table[node].low;
-            file << "    " << node << " [label=\"" << BDD_Var_Table[node].label << "\"];" << std::endl;
-            file << "    " << node << " -> " << high << " [label=\"" <<BDD_Var_Table[high].label<< "\"];" << std::endl;
-            file << "    " << node << " -> " << low << " [label=\"" <<BDD_Var_Table[high].label<< "\"];" << std::endl;
+            file << "    " << node << " -> " << high << " [style=solid];" << std::endl;
+            file << "    " << node << " -> " << low << " [style=dotted];" << std::endl;
+    
         
     }
 
