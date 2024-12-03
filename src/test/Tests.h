@@ -349,8 +349,11 @@ struct ManagerTest : testing::Test {
     ClassProject::BDD_ID c_id = manager->createVar("c");
     ClassProject::BDD_ID d_id = manager->createVar("d");
 
+    ClassProject::BDD_ID neg_a_id = manager->neg(a_id);
+    ClassProject::BDD_ID neg_b_id = manager->neg(b_id);
 
     ClassProject::BDD_ID a_and_b_id = manager->and2(a_id, b_id);
+
 };
 
 
@@ -384,6 +387,7 @@ TEST_F(ManagerTest, FindVarsTest) /* NOLINT */
 
 TEST_F(ManagerTest, IteTest) /* NOLINT */
 {
+    std::cout << "neg_b_id: " << neg_b_id << std::endl;
     EXPECT_EQ(manager->ite(b_id, a_id, false_id), a_and_b_id);
     EXPECT_EQ(manager->ite(b_id, a_id, true_id), manager->or2(a_and_b_id, manager->neg(b_id)));
 

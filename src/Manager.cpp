@@ -99,9 +99,9 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
             x = std::min(topVar(e), x);
         }
 
-
         highSuccessor = ite(Manager::coFactorTrue(i, x), Manager::coFactorTrue(t, x), Manager::coFactorTrue(e, x));
         lowSuccessor = ite(Manager::coFactorFalse(i, x), Manager::coFactorFalse(t, x), Manager::coFactorFalse(e, x));
+        
         
         if (highSuccessor == lowSuccessor){
             return highSuccessor;
@@ -110,8 +110,9 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
         for (BDD_ID k=0; k<Manager::uniqueTableSize(); k++){
             
 
-            if ( (BDD_Var_Table[k].high == highSuccessor) && (BDD_Var_Table[k].low == lowSuccessor) && (BDD_Var_Table[k].top_var == Manager::topVar(k)) ){
-                std::cout << "found" << std::endl;
+            if ( (BDD_Var_Table[k].high == highSuccessor) && (BDD_Var_Table[k].low == lowSuccessor) && (BDD_Var_Table[k].top_var == x) ){
+
+                std::cout << "Found" << std::endl;
                 return BDD_Var_Table[k].id;
             }
         }
