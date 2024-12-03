@@ -46,7 +46,7 @@ bool Manager::isConstant(BDD_ID f){
     the corresponding boolean value.
 */
 bool Manager::isVariable(BDD_ID f){
-    return ( (f!=Manager::False()) && (f!=Manager::True()));
+    return ( (f!=Manager::False()) && (f!=Manager::True())  && BDD_Var_Table[f].top_var == f);
 }
 
 /*
@@ -342,6 +342,8 @@ void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
     else {
        
         nodes_of_root.insert(BDD_Var_Table[root].id);
+        nodes_of_root.insert(BDD_Var_Table[root].high);
+        nodes_of_root.insert(BDD_Var_Table[root].low);
         findNodes(BDD_Var_Table[root].high, nodes_of_root);
         findNodes(BDD_Var_Table[root].low, nodes_of_root);
     }
@@ -356,7 +358,7 @@ void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){
     std::set<BDD_ID> nodes_of_root;
     findNodes(root, nodes_of_root);
     for (const auto &node : nodes_of_root){
-       
+       if(node!=0 && node!=1)
         vars_of_root.insert(topVar(node));
     
     }
@@ -385,12 +387,12 @@ void Manager::visualizeBDD(std::string filepath, BDD_ID &root) {
     findNodes(root, nodes);
 
     for (const auto &node : nodes) {
-           
+           if(node!=0 && node!=1){
             file << "    " << node << " [label=\"" << BDD_Var_Table[BDD_Var_Table[node].top_var].label << "\"];" << std::endl;
         
             file << "    " << node << " -> " << high << " [style=solid];" << std::endl;
             file << "    " << node << " -> " << low << " [style=dotted];" << std::endl;
-    
+        }
         
     }
 
