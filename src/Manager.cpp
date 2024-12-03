@@ -46,7 +46,7 @@ bool Manager::isConstant(BDD_ID f){
     the corresponding boolean value.
 */
 bool Manager::isVariable(BDD_ID f){
-    return ( (f!=Manager::False()) && (f!=Manager::True())  && BDD_Var_Table[f].top_var == f);
+    return ( (!isConstant(f)) && (topVar(f)==f) );
 }
 
 /*
@@ -86,20 +86,19 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     else {
         BDD_ID highSuccessor,lowSuccessor;
 
-        bool isVariable_i = isVariable(i);
-        bool isVariable_t = isVariable(t);
-        bool isVariable_e = isVariable(e);
+       
 
         BDD_ID x = Manager::False();
-        if (isVariable_i){
+        if (!isConstant(i)){
             x = topVar(i);
         }
-        else if (isVariable_t){
+        if (!isConstant(t)){
             x = std::min(topVar(t), x);
         }
-        else if (isVariable_e){
+        if (!isConstant(e)){
             x = std::min(topVar(e), x);
         }
+
 
         highSuccessor = ite(Manager::coFactorTrue(i, x), Manager::coFactorTrue(t, x), Manager::coFactorTrue(e, x));
         lowSuccessor = ite(Manager::coFactorFalse(i, x), Manager::coFactorFalse(t, x), Manager::coFactorFalse(e, x));
@@ -108,11 +107,16 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
             return highSuccessor;
         }
 
-        for (int i=0; i<Manager::uniqueTableSize(); i++){
-            if ( (BDD_Var_Table[i].high == highSuccessor) && (BDD_Var_Table[i].low == lowSuccessor) && (BDD_Var_Table[i].top_var == Manager::topVar(i)) ){
-                return BDD_Var_Table[i].id;
+        for (BDD_ID k=0; k<Manager::uniqueTableSize(); k++){
+            
+
+            if ( (BDD_Var_Table[k].high == highSuccessor) && (BDD_Var_Table[k].low == lowSuccessor) && (BDD_Var_Table[k].top_var == Manager::topVar(k)) ){
+                std::cout << "found" << std::endl;
+                return BDD_Var_Table[k].id;
             }
         }
+
+        std::cout << "         CREATED VAR" << std::endl;
         BDD_Var new_var;
         new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
         new_var.label = "id"+std::to_string(new_var.id);
@@ -336,12 +340,12 @@ std::string Manager::getTopVarName(const BDD_ID &root) {
 */
 void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
     
+    nodes_of_root.insert(BDD_Var_Table[root].id);
+    
     if(BDD_Var_Table[root].id==0 || BDD_Var_Table[root].id==1){
         return;
     }
     else {
-       
-        nodes_of_root.insert(BDD_Var_Table[root].id);
         nodes_of_root.insert(BDD_Var_Table[root].high);
         nodes_of_root.insert(BDD_Var_Table[root].low);
         findNodes(BDD_Var_Table[root].high, nodes_of_root);

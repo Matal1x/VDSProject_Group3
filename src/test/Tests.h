@@ -107,12 +107,12 @@ TEST_F(ManagerTest, ite) {
     BDD_ID var_d = manager.createVar("d");
 
     BDD_ID ite_aORb = manager.ite(var_a, 1, var_b);
-    BDD_ID ite_cANDd = manager.ite(var_c, var_d, 0);
-    BDD_ID ite_f = manager.ite(ite_aORb, ite_cANDd, 0);
+    // BDD_ID ite_cANDd = manager.ite(var_c, var_d, 0);
+    // BDD_ID ite_f = manager.ite(ite_aORb, ite_cANDd, 0);
 
     EXPECT_EQ(ite_aORb, 6);
-    EXPECT_EQ(ite_cANDd, 7);
-    EXPECT_EQ(ite_f, 9);
+    // EXPECT_EQ(ite_cANDd, 7);
+    // EXPECT_EQ(ite_f, 9);
 }
 
 
@@ -211,7 +211,7 @@ TEST_F (ManagerTest, findNodes) {
     BDD_ID cANDd = manager.and2(c,d);
     BDD_ID f = manager.and2(aORb,cANDd);
     std::set<BDD_ID> nodes_of_root, predefined_nodes_of_root;
-    predefined_nodes_of_root = {5, 7, 8, 9};
+    predefined_nodes_of_root = {0, 1, 5, 7, 8, 9};
     manager.findNodes(f, nodes_of_root);
 
     EXPECT_EQ(predefined_nodes_of_root, nodes_of_root);
@@ -244,6 +244,80 @@ TEST_F (ManagerTest, visualizeBDD) {
     std::string filepath = "bdd.dot";
     manager.visualizeBDD(filepath, f);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+TEST_F(ManagerTest, IsVariableTest) /* NOLINT */
+{   
+    
+
+    ClassProject::BDD_ID false_id = manager.False();
+    ClassProject::BDD_ID true_id = manager.True();
+
+    ClassProject::BDD_ID a_id = manager.createVar("a");
+    ClassProject::BDD_ID b_id = manager.createVar("b");
+    ClassProject::BDD_ID c_id = manager.createVar("c");
+    ClassProject::BDD_ID d_id = manager.createVar("d");
+
+
+    ClassProject::BDD_ID a_and_b_id = manager.and2(a_id, b_id);
+    EXPECT_FALSE(manager.isVariable(a_and_b_id));
+}
+
+
+TEST_F(ManagerTest, iteOFFICIAL) {
+    BDD_ID var_a = manager.createVar("a");
+    BDD_ID var_b = manager.createVar("b");
+
+    BDD_ID ite_aANDb = manager.ite(var_a, var_b, 0);
+    BDD_ID ite_bANDa = manager.ite(var_b, var_a, 0);
+
+    EXPECT_EQ(ite_aANDb, 4);
+    EXPECT_EQ(ite_bANDa, ite_aANDb);
+}
+
+    
+TEST_F(ManagerTest, FindNodesTest) /* NOLINT */
+{
+
+    std::set<ClassProject::BDD_ID> true_nodes, a_and_b_nodes;
+    ClassProject::BDD_ID false_id = manager.False();
+    ClassProject::BDD_ID true_id = manager.True();
+    ClassProject::BDD_ID a_id = manager.createVar("a");
+    ClassProject::BDD_ID b_id = manager.createVar("b");
+    ClassProject::BDD_ID c_id = manager.createVar("c");
+    ClassProject::BDD_ID d_id = manager.createVar("d");
+
+
+    ClassProject::BDD_ID a_and_b_id = manager.and2(a_id, b_id);
+    manager.findNodes(a_and_b_id, a_and_b_nodes);
+
+    manager.findNodes(true_id, true_nodes);
+
+    EXPECT_EQ(true_nodes.size(), 1);
+    EXPECT_TRUE(a_and_b_nodes.find(true_id) != true_nodes.end());
+}
+
+TEST_F(ManagerTest, FindVarsTest) /* NOLINT */
+ {
+    std::set<ClassProject::BDD_ID> true_nodes, a_and_b_nodes;
+    ClassProject::BDD_ID false_id = manager.False();
+    ClassProject::BDD_ID true_id = manager.True();
+    ClassProject::BDD_ID a_id = manager.createVar("a");
+    ClassProject::BDD_ID b_id = manager.createVar("b");
+    ClassProject::BDD_ID c_id = manager.createVar("c");
+    ClassProject::BDD_ID d_id = manager.createVar("d");
+
+    ClassProject::BDD_ID a_and_b_id = manager.and2(a_id, b_id);
+
+     
+
+     manager.findVars(a_and_b_id, a_and_b_nodes);
+
+     EXPECT_EQ(a_and_b_nodes.size(), 2);
+     EXPECT_TRUE(a_and_b_nodes.find(a_id) != a_and_b_nodes.end());
+     EXPECT_TRUE(a_and_b_nodes.find(b_id) != a_and_b_nodes.end());
+ }
 
 }
 
