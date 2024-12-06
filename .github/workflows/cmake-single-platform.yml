@@ -33,9 +33,9 @@ jobs:
 
     - name: Run Google Tests
       run: |
-        if [ -f ${{github.workspace}}/src/test/VDSProject_test ]; then
-          chmod +x ${{github.workspace}}/src/test/VDSProject_test
-          ${{github.workspace}}/src/test/VDSProject_test
+        if [ -f ${{github.workspace}}/build/src/test/VDSProject_test ]; then
+          chmod +x ${{github.workspace}}/build/src/test/VDSProject_test
+          ${{github.workspace}}/build/src/test/VDSProject_test
         else
           echo "Test binary not found!"
           exit 1
