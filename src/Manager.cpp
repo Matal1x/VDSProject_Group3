@@ -6,6 +6,15 @@ namespace ClassProject {
     for variables that don't need computation.
 */
 BDD_ID Manager::createVar(const std::string &label){
+    
+    bool found = false;
+    for (const auto &node : BDD_Var_Table){
+        if (node.label == label){
+            found = true;
+            return node.id;
+        }
+    }
+    
     BDD_Var new_var;
     new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
     new_var.label = label;
@@ -23,14 +32,14 @@ BDD_ID Manager::createVar(const std::string &label){
     Returns the refeerence to the 'True' Terminal node.
 */
 const BDD_ID &Manager::True(){
-    return BDD_Var_Table[1].id;
+    return true_var;
 }
 
 /*
     Returns the refeerence to the 'False' Terminal node.
 */
 const BDD_ID &Manager::False(){
-    return BDD_Var_Table[0].id;
+    return false_var;
 }
 
 /*
@@ -83,51 +92,43 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     else if (t==e){
         return t; 
     } 
-    else {
-        BDD_ID highSuccessor,lowSuccessor;
-
-       
-
-        BDD_ID x = Manager::False();
-        if (!isConstant(i)){
-            x = topVar(i);
-        }
-        if (!isConstant(t)){
-            x = std::min(topVar(t), x);
-        }
-        if (!isConstant(e)){
-            x = std::min(topVar(e), x);
-        }
-
-        highSuccessor = ite(Manager::coFactorTrue(i, x), Manager::coFactorTrue(t, x), Manager::coFactorTrue(e, x));
-        lowSuccessor = ite(Manager::coFactorFalse(i, x), Manager::coFactorFalse(t, x), Manager::coFactorFalse(e, x));
-        
-        
-        if (highSuccessor == lowSuccessor){
-            return highSuccessor;
-        }
-
-        for (BDD_ID k=0; k<Manager::uniqueTableSize(); k++){
-            
-
-            if ( (BDD_Var_Table[k].high == highSuccessor) && (BDD_Var_Table[k].low == lowSuccessor) && (BDD_Var_Table[k].top_var == x) ){
-
-                std::cout << "Found" << std::endl;
-                return BDD_Var_Table[k].id;
-            }
-        }
-
-        std::cout << "         CREATED VAR" << std::endl;
-        BDD_Var new_var;
-        new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
-        new_var.label = "id"+std::to_string(new_var.id);
-        new_var.high = highSuccessor;
-        new_var.low = lowSuccessor;
-        new_var.top_var = x;
-        BDD_Var_Table.push_back(new_var);
-
-        return new_var.id;
+    
+    BDD_ID highSuccessor,lowSuccessor;
+  
+    BDD_ID x = Manager::False();
+    if (!isConstant(i)){
+        x = topVar(i);
     }
+    if (!isConstant(t)){
+        x = std::min(topVar(t), x);
+    }
+    if (!isConstant(e)){
+        x = std::min(topVar(e), x);
+    }
+    highSuccessor = ite(Manager::coFactorTrue(i, x), Manager::coFactorTrue(t, x), Manager::coFactorTrue(e, x));
+    lowSuccessor = ite(Manager::coFactorFalse(i, x), Manager::coFactorFalse(t, x), Manager::coFactorFalse(e, x));
+     
+     
+    if (highSuccessor == lowSuccessor){
+        return highSuccessor;
+    }
+    for (const auto &node : BDD_Var_Table){
+         
+        if ( (node.high == highSuccessor) && (node.low == lowSuccessor) && (node.top_var == x) ){
+          //std::cout << "Found" << std::endl;
+            return node.id;
+        }
+    }
+    //std::cout << "         CREATED VAR" << std::endl;
+    BDD_Var new_var;
+    new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
+    new_var.label = "id"+std::to_string(new_var.id);
+    new_var.high = highSuccessor;
+    new_var.low = lowSuccessor;
+    new_var.top_var = x;
+    BDD_Var_Table.push_back(new_var);
+    return new_var.id;
+    
 }
 
 BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
@@ -340,18 +341,15 @@ std::string Manager::getTopVarName(const BDD_ID &root) {
     0 and 1 are not added to the set
 */
 void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
-    
-    nodes_of_root.insert(BDD_Var_Table[root].id);
-    
-    if(BDD_Var_Table[root].id==0 || BDD_Var_Table[root].id==1){
+
+    if(nodes_of_root.find(root) != nodes_of_root.end()){
         return;
     }
-    else {
-        nodes_of_root.insert(BDD_Var_Table[root].high);
-        nodes_of_root.insert(BDD_Var_Table[root].low);
-        findNodes(BDD_Var_Table[root].high, nodes_of_root);
-        findNodes(BDD_Var_Table[root].low, nodes_of_root);
-    }
+    
+    nodes_of_root.insert(BDD_Var_Table[root].id);
+    std::cout << BDD_Var_Table[root].id << std::endl;
+    findNodes(BDD_Var_Table[root].high, nodes_of_root);
+    findNodes(BDD_Var_Table[root].low, nodes_of_root);
 }
 
 /*  

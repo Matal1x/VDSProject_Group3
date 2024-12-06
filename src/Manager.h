@@ -19,6 +19,8 @@ namespace ClassProject {
 		BDD_ID low;
 		BDD_ID top_var;
 	} BDD_Var;
+
+
 	
 	class Manager : public ManagerInterface {
 
@@ -32,6 +34,8 @@ namespace ClassProject {
 		}
 
         BDD_ID createVar(const std::string &label);
+		BDD_ID false_var = 0;
+		BDD_ID true_var = 1;
 
         const BDD_ID &True();
         const BDD_ID &False();
