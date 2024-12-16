@@ -175,6 +175,32 @@ VDSProject/fast:
 .PHONY : VDSProject/fast
 
 #=============================================================================
+# Target rules for targets named VDSProject_bench
+
+# Build rule for target.
+VDSProject_bench: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 VDSProject_bench
+.PHONY : VDSProject_bench
+
+# fast build rule for target.
+VDSProject_bench/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/VDSProject_bench.dir/build.make CMakeFiles/VDSProject_bench.dir/build
+.PHONY : VDSProject_bench/fast
+
+#=============================================================================
+# Target rules for targets named VDSProject_verify
+
+# Build rule for target.
+VDSProject_verify: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 VDSProject_verify
+.PHONY : VDSProject_verify
+
+# fast build rule for target.
+VDSProject_verify/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/VDSProject_verify.dir/build.make CMakeFiles/VDSProject_verify.dir/build
+.PHONY : VDSProject_verify/fast
+
+#=============================================================================
 # Target rules for targets named gmock
 
 # Build rule for target.
@@ -252,6 +278,43 @@ VDSProject_test/fast:
 	$(MAKE) $(MAKESILENT) -f src/test/CMakeFiles/VDSProject_test.dir/build.make src/test/CMakeFiles/VDSProject_test.dir/build
 .PHONY : VDSProject_test/fast
 
+#=============================================================================
+# Target rules for targets named Benchmark
+
+# Build rule for target.
+Benchmark: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Benchmark
+.PHONY : Benchmark
+
+# fast build rule for target.
+Benchmark/fast:
+	$(MAKE) $(MAKESILENT) -f src/bench/CMakeFiles/Benchmark.dir/build.make src/bench/CMakeFiles/Benchmark.dir/build
+.PHONY : Benchmark/fast
+
+src/bench/main_bench.o: src/bench/main_bench.cpp.o
+.PHONY : src/bench/main_bench.o
+
+# target to build an object file
+src/bench/main_bench.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/VDSProject_bench.dir/build.make CMakeFiles/VDSProject_bench.dir/src/bench/main_bench.cpp.o
+.PHONY : src/bench/main_bench.cpp.o
+
+src/bench/main_bench.i: src/bench/main_bench.cpp.i
+.PHONY : src/bench/main_bench.i
+
+# target to preprocess a source file
+src/bench/main_bench.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/VDSProject_bench.dir/build.make CMakeFiles/VDSProject_bench.dir/src/bench/main_bench.cpp.i
+.PHONY : src/bench/main_bench.cpp.i
+
+src/bench/main_bench.s: src/bench/main_bench.cpp.s
+.PHONY : src/bench/main_bench.s
+
+# target to generate assembly for a file
+src/bench/main_bench.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/VDSProject_bench.dir/build.make CMakeFiles/VDSProject_bench.dir/src/bench/main_bench.cpp.s
+.PHONY : src/bench/main_bench.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -276,6 +339,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/VDSProject.dir/build.make CMakeFiles/VDSProject.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/verify/main_verify.o: src/verify/main_verify.cpp.o
+.PHONY : src/verify/main_verify.o
+
+# target to build an object file
+src/verify/main_verify.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/VDSProject_verify.dir/build.make CMakeFiles/VDSProject_verify.dir/src/verify/main_verify.cpp.o
+.PHONY : src/verify/main_verify.cpp.o
+
+src/verify/main_verify.i: src/verify/main_verify.cpp.i
+.PHONY : src/verify/main_verify.i
+
+# target to preprocess a source file
+src/verify/main_verify.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/VDSProject_verify.dir/build.make CMakeFiles/VDSProject_verify.dir/src/verify/main_verify.cpp.i
+.PHONY : src/verify/main_verify.cpp.i
+
+src/verify/main_verify.s: src/verify/main_verify.cpp.s
+.PHONY : src/verify/main_verify.s
+
+# target to generate assembly for a file
+src/verify/main_verify.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/VDSProject_verify.dir/build.make CMakeFiles/VDSProject_verify.dir/src/verify/main_verify.cpp.s
+.PHONY : src/verify/main_verify.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -288,16 +375,25 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... Benchmark"
 	@echo "... Manager"
 	@echo "... VDSProject"
+	@echo "... VDSProject_bench"
 	@echo "... VDSProject_test"
+	@echo "... VDSProject_verify"
 	@echo "... gmock"
 	@echo "... gmock_main"
 	@echo "... gtest"
 	@echo "... gtest_main"
+	@echo "... src/bench/main_bench.o"
+	@echo "... src/bench/main_bench.i"
+	@echo "... src/bench/main_bench.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/verify/main_verify.o"
+	@echo "... src/verify/main_verify.i"
+	@echo "... src/verify/main_verify.s"
 .PHONY : help
 
 

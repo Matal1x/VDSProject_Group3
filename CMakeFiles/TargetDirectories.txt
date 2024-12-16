@@ -1,4 +1,6 @@
 /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/CMakeFiles/VDSProject.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/CMakeFiles/VDSProject_bench.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/CMakeFiles/VDSProject_verify.dir
 /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/CMakeFiles/edit_cache.dir
 /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/CMakeFiles/rebuild_cache.dir
 /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/CMakeFiles/list_install_components.dir
@@ -41,3 +43,16 @@
 /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/test/CMakeFiles/install.dir
 /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/test/CMakeFiles/install/local.dir
 /home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/test/CMakeFiles/install/strip.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/bench/CMakeFiles/Benchmark.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/bench/CMakeFiles/edit_cache.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/bench/CMakeFiles/rebuild_cache.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/bench/CMakeFiles/list_install_components.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/bench/CMakeFiles/install.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/bench/CMakeFiles/install/local.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/bench/CMakeFiles/install/strip.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/verify/CMakeFiles/edit_cache.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/verify/CMakeFiles/rebuild_cache.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/verify/CMakeFiles/list_install_components.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/verify/CMakeFiles/install.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/verify/CMakeFiles/install/local.dir
+/home/klevisresuli/Documents/second_year/vds_project/VDSProject_Group3/src/verify/CMakeFiles/install/strip.dir
