@@ -7,10 +7,8 @@ namespace ClassProject {
 */
 BDD_ID Manager::createVar(const std::string &label){
     
-    bool found = false;
     for (const auto &node : BDD_Var_Table){
         if (node.label == label){
-            found = true;
             return node.id;
         }
     }
@@ -24,7 +22,11 @@ BDD_ID Manager::createVar(const std::string &label){
     new_var.top_var = static_cast<BDD_ID>(Manager::uniqueTableSize()); 
      
     BDD_Var_Table.push_back(new_var);
-   
+
+    // Adding to the fast hash table
+    NodeKey key = {new_var.high, new_var.low, new_var.top_var};
+    optimizedTable[key] = new_var.id;
+
     return new_var.id;
 }
 
@@ -79,54 +81,71 @@ BDD_ID Manager::topVar(BDD_ID f){
     if they are not equal, it checks if the result is already in the BDD_Var_Table and returns it.
     if it is not, it creates a new entry in the BDD_Var_Table and returns the id of the new entry.     
 */
-BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
-    if (i==1){
-        return t;
+BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
+    if (F==1){
+        return G;
     }
-    else if (i==0){
-        return e;
+    else if (F==0){
+        return H;
     }
-    else if ((t==1) && (e==0)){
-        return i;
+    else if ((G==1) && (H==0)){
+        return F;
     }
-    else if (t==e){
-        return t; 
+    else if (G==H){
+        return G; 
     } 
     
     Triplet tri;
-    tri.F=i; tri.G=t; tri.H=e;
+    tri.F=F; tri.G=G; tri.H=H;
 
     auto checking = computed_table.find(tri);
     if ( checking != computed_table.end()){
+        //std::cout << "         FOUND ONE IN CT (emplace)" << std::endl;
         return checking->second;
     }
 
     BDD_ID T,E;
   
     BDD_ID x = Manager::False();
-    if (!isConstant(i)){
-        x = topVar(i);
+    if (!isConstant(F)){
+        x = topVar(F);
     }
-    if (!isConstant(t)){
-        x = std::min(topVar(t), x);
+    if (!isConstant(G)){
+        x = std::min(topVar(G), x);
     }
-    if (!isConstant(e)){
-        x = std::min(topVar(e), x);
+    if (!isConstant(H)){
+        x = std::min(topVar(H), x);
     }
-    T = ite(Manager::coFactorTrue(i, x), Manager::coFactorTrue(t, x), Manager::coFactorTrue(e, x));
-    E = ite(Manager::coFactorFalse(i, x), Manager::coFactorFalse(t, x), Manager::coFactorFalse(e, x));
+
+    BDD_ID ct_f=Manager::coFactorTrue(F, x), ct_g=Manager::coFactorTrue(G, x), ct_h=Manager::coFactorTrue(H, x);
+    T = ite(ct_f, ct_g, ct_h);
+    computed_table[{ct_f, ct_g, ct_h}] = T;
+
+    BDD_ID cf_f=Manager::coFactorFalse(F, x), cf_g=Manager::coFactorFalse(G, x), cf_h=Manager::coFactorFalse(H, x);
+    E = ite(cf_f, cf_g, cf_h);
      
      
     if (T == E){
         return T;
     }
-    for (const auto &node : BDD_Var_Table){
+    // Putting it here just in case T=E
+    computed_table[{cf_f, cf_g, cf_h}] = E;
+
+    // for (const auto &node : BDD_Var_Table){
          
-        if ( (node.high == T) && (node.low == E) && (node.top_var == x) ){
-          //std::cout << "Found" << std::endl;
-            return node.id;
-        }
+    //     if ( (node.high == T) && (node.low == E) && (node.top_var == x) ){
+    //       //std::cout << "Found" << std::endl;
+    //         return node.id;
+    //     }
+    // }
+
+    NodeKey key = {T,E,x};
+    auto it = optimizedTable.find(key);
+    if (it != optimizedTable.end()) {
+        //std::cout << "found one in ot" << std::endl;
+        return it->second; // Return existing ID
     }
+
     //std::cout << "         CREATED VAR" << std::endl;
     BDD_Var R;
     R.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
@@ -135,7 +154,8 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     R.low = E;
     R.top_var = x;
     BDD_Var_Table.push_back(R);
-    computed_table.emplace(tri, R.id);
+    computed_table[tri] = R.id;
+    optimizedTable[key] = R.id;
     return R.id;
     
 }
@@ -148,84 +168,20 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         if (topVar(f) == x){
             return BDD_Var_Table[f].high;
         }
-        // if topVar(f) < x
-
-
-        // the case of CoFactorTrue(a*b, b)= a
-        // we need to call the function ite in a way that it returns a.
-        // we also need to keep in mind the cases the function given in the PDF
-        // and that they are still working.
-        //return ite(topVar(f), BDD_Var_Table[x].high, BDD_Var_Table[x].low);
-        // this works for this case but since the False variation which is
-        // built on this model doesn't yield correct values than it is not correct.
-        // in case we want ite to return a;
-        // we have:
-        // ite(something=1, something=a, whatever)
-        // ite(something=0, whatever, something=a}
-        // ite(something, something=a, something=a)
-        // ite(something=a, something=1, something=1)
-        // since we are using topvar(f) then 
-        // the first two cases are impossible. (explanation in False variant)
-
-        /*
-            Let's take the case of f=(a+b)*c*d
-            cofactorTrue(f, c) = a+b*d
-            if we take into consideration that we are using topVar(f)
-            then we have to implement it and the ite function
-            
-            if we look at the function f, we can have two sub graphs: a*c*d and b*c*d
-            if we cofactorTrue the first one, we get a*d
-            if we cofactorTrue the second one, we get b*d
-            at the end we get a*d+b*d which is a+b*d
-            in this example both subgraphs contain c.
-            so if a is true, then we would only need to look at the right sub graph.
-            but if it is false, then we would need to look at the left sub graph which is b*c*d.
-            the point is, both could contain c.
-            if we write this in 'ite language', we get:
-            if a is true then look at the right subgraph which is c*d and cofactor it wrt c,
-            else look at the left subgraph which is b*c*d and cofactor it wrt to c.
-            thus we get:
-        */
-            return ite(topVar(f), coFactorTrue(BDD_Var_Table[f].high, x), coFactorTrue(BDD_Var_Table[f].low, x));
+        return ite(topVar(f), coFactorTrue(BDD_Var_Table[f].high, x), coFactorTrue(BDD_Var_Table[f].low, x));
     }
 }
 
 BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
     if (isConstant(f) || isConstant(x) || topVar(f) > x ){
-        // if f==1, return 1, 
-        // if f==0, return 0,
-        // if x==1 or x==0, it doesn't affect the result, so return f
-        // if topVar(f) > x, it means that x is not part of f, so return f
         return f;
     }
     else {
         if (topVar(f) == x){
-            // just like CoFactorFalse(f)
             return BDD_Var_Table[f].low;
         }
-        // if topVar(f) < x
-
-
-        // in case CoFactorFalse(a*b, b)= 0, 
-        // ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high)
-        // is false as it will return !a instead of 0.
-        // thus returning 0 with ite would result in something like:
-        // ite(something, something=0,something=0)
-        // ite(something=1. something=0, whatever)
-        // ite(something=0, whatever, something=0).
-        // if we take into consideration that we are using topVar(f)
-        // then it can only be the ite of the first case.
-        // becasue topVar(f) with f=a*b can never be 0 or 1.
-        // which means the other 2 parameters need to be 0 in this case.
-        // and most likely diffirent than each other. as in, their calculation is diffirent.
-       // return ite(topVar(f), BDD_Var_Table[x].low, BDD_Var_Table[x].high);
-
-       /*
-        Basically the same concept as in the cofactorTrue function.
-        explanation is there.
-       */
         return ite(topVar(f), coFactorFalse(BDD_Var_Table[f].high, x), coFactorFalse(BDD_Var_Table[f].low, x));
-    }
+    } 
 }
 
 /*

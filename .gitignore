@@ -16,3 +16,6 @@ VDSProject*
 *.so
 *.d
 results*
+lib/
+doc/
+bin/
