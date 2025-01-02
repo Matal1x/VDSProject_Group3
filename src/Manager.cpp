@@ -24,7 +24,7 @@ BDD_ID Manager::createVar(const std::string &label){
     BDD_Var_Table.push_back(new_var);
 
     // Adding to the fast hash table
-    NodeKey key = {new_var.high, new_var.low, new_var.top_var};
+    Triplet key = {new_var.high, new_var.low, new_var.top_var};
     optimizedTable[key] = new_var.id;
 
     return new_var.id;
@@ -139,7 +139,7 @@ BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
     //     }
     // }
 
-    NodeKey key = {T,E,x};
+    Triplet key = {T,E,x};
     auto it = optimizedTable.find(key);
     if (it != optimizedTable.end()) {
         //std::cout << "found one in ot" << std::endl;

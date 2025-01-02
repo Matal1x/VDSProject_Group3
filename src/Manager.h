@@ -38,34 +38,15 @@ namespace ClassProject {
 	};
 
 
-	struct NodeKey {
-    BDD_ID high;
-    BDD_ID low;
-    BDD_ID top_var;
-
-    bool operator==(const NodeKey &other) const {
-        return high == other.high && low == other.low && top_var == other.top_var;
-    }
-	};
-
-	struct HashNodeKey {
-    std::size_t operator()(const NodeKey &key) const {
-        std::size_t h1 = std::hash<BDD_ID>()(key.high);
-        std::size_t h2 = std::hash<BDD_ID>()(key.low);
-        std::size_t h3 = std::hash<BDD_ID>()(key.top_var);
-        return h1 ^ (h2 << 1) ^ (h3 << 2);
-    }
-	};
 
 
 	class Manager : public ManagerInterface {
 
 		
 		std::vector<BDD_Var> BDD_Var_Table;
-		using computed_table_type = std::unordered_map<Triplet, BDD_ID, HashTriplet>;
-		computed_table_type computed_table;
-
-		std::unordered_map<NodeKey, BDD_ID, HashNodeKey> optimizedTable;
+		std::unordered_map<Triplet, BDD_ID, HashTriplet> computed_table;
+		std::unordered_map<Triplet, BDD_ID, HashTriplet> optimizedTable;
+		
 		public:
 		Manager(){
 			BDD_Var_Table.push_back({0, "False", 0, 0, 0});
