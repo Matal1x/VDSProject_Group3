@@ -10,7 +10,6 @@
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
-#include <boost/functional/hash.hpp>
 
 namespace ClassProject {
 	typedef struct
@@ -31,11 +30,10 @@ namespace ClassProject {
 
 	struct HashTriplet {
     std::size_t operator()(const Triplet &t) const {
-        std::size_t seed = 0;
-        boost::hash_combine(seed, std::hash<BDD_ID>{}(t.F));
-		boost::hash_combine(seed, std::hash<BDD_ID>{}(t.G));
-		boost::hash_combine(seed, std::hash<BDD_ID>{}(t.H));
-        return seed;
+        std::size_t h1 = std::hash<BDD_ID>()(t.F);
+        std::size_t h2 = std::hash<BDD_ID>()(t.G);
+        std::size_t h3 = std::hash<BDD_ID>()(t.H);
+        return h1 ^ (h2 << 1) ^ (h3 << 2);
     }
 	};
 
@@ -68,7 +66,6 @@ namespace ClassProject {
 		computed_table_type computed_table;
 
 		std::unordered_map<NodeKey, BDD_ID, HashNodeKey> optimizedTable;
-		std::unordered_map<std::string, BDD_ID> label_to_id_map;
 		public:
 		Manager(){
 			BDD_Var_Table.push_back({0, "False", 0, 0, 0});
