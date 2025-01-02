@@ -93,7 +93,15 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
         return t; 
     } 
     
-    BDD_ID highSuccessor,lowSuccessor;
+    Triplet tri;
+    tri.F=i; tri.G=t; tri.H=e;
+
+    auto checking = computed_table.find(tri);
+    if ( checking != computed_table.end()){
+        return checking->second;
+    }
+
+    BDD_ID T,E;
   
     BDD_ID x = Manager::False();
     if (!isConstant(i)){
@@ -105,29 +113,30 @@ BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e){
     if (!isConstant(e)){
         x = std::min(topVar(e), x);
     }
-    highSuccessor = ite(Manager::coFactorTrue(i, x), Manager::coFactorTrue(t, x), Manager::coFactorTrue(e, x));
-    lowSuccessor = ite(Manager::coFactorFalse(i, x), Manager::coFactorFalse(t, x), Manager::coFactorFalse(e, x));
+    T = ite(Manager::coFactorTrue(i, x), Manager::coFactorTrue(t, x), Manager::coFactorTrue(e, x));
+    E = ite(Manager::coFactorFalse(i, x), Manager::coFactorFalse(t, x), Manager::coFactorFalse(e, x));
      
      
-    if (highSuccessor == lowSuccessor){
-        return highSuccessor;
+    if (T == E){
+        return T;
     }
     for (const auto &node : BDD_Var_Table){
          
-        if ( (node.high == highSuccessor) && (node.low == lowSuccessor) && (node.top_var == x) ){
+        if ( (node.high == T) && (node.low == E) && (node.top_var == x) ){
           //std::cout << "Found" << std::endl;
             return node.id;
         }
     }
     //std::cout << "         CREATED VAR" << std::endl;
-    BDD_Var new_var;
-    new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
-    new_var.label = "id"+std::to_string(new_var.id);
-    new_var.high = highSuccessor;
-    new_var.low = lowSuccessor;
-    new_var.top_var = x;
-    BDD_Var_Table.push_back(new_var);
-    return new_var.id;
+    BDD_Var R;
+    R.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
+    R.label = "id"+std::to_string(R.id);
+    R.high = T;
+    R.low = E;
+    R.top_var = x;
+    BDD_Var_Table.push_back(R);
+    computed_table.emplace(tri, R.id);
+    return R.id;
     
 }
 

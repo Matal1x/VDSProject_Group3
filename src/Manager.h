@@ -9,6 +9,8 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
+
 
 namespace ClassProject {
 	typedef struct
@@ -20,12 +22,29 @@ namespace ClassProject {
 		BDD_ID top_var;
 	} BDD_Var;
 
+	struct Triplet {
+    BDD_ID F, G, H;
+    bool operator==(const Triplet &other) const {
+        return (F == other.F && G == other.G && H == other.H);
+    }
+	};
 
-	
+	struct HashTriplet {
+    std::size_t operator()(const Triplet &t) const {
+        std::size_t h1 = std::hash<BDD_ID>()(t.F);
+        std::size_t h2 = std::hash<BDD_ID>()(t.G);
+        std::size_t h3 = std::hash<BDD_ID>()(t.H);
+
+        return h1 ^ (h2 << 1) ^ (h3 << 2);
+    }
+	};
+
 	class Manager : public ManagerInterface {
 
 		
 		std::vector<BDD_Var> BDD_Var_Table;
+		using computed_table_type = std::unordered_map<Triplet, BDD_ID, HashTriplet>;
+		computed_table_type computed_table;
 		
 		public:
 		Manager(){
