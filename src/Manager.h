@@ -5,7 +5,7 @@
 #ifndef VDSPROJECT_MANAGER_H
 #define VDSPROJECT_MANAGER_H
 
-//#define INCLUDE_LABELS
+#define INCLUDE_LABELS
 //#define INCLUDE_STRING_LABEL
 
 #include "ManagerInterface.h"
