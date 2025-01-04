@@ -15,7 +15,7 @@ BDD_ID Manager::createVar(const std::string &label){
     
     BDD_Var new_var;
     new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
-    new_var.label = label;
+    strncpy(new_var.label , label.c_str(), sizeof(new_var.label)-1);
     
     new_var.high = this->True(); 
     new_var.low = this->False();
@@ -149,7 +149,7 @@ BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
     //std::cout << "         CREATED VAR" << std::endl;
     BDD_Var R;
     R.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
-    R.label = "id"+std::to_string(R.id);
+    strncpy(R.label, ("id" + std::to_string(R.id)).c_str(), sizeof(R.label) - 1);
     R.high = T;
     R.low = E;
     R.top_var = x;
@@ -215,7 +215,7 @@ size_t Manager::uniqueTableSize() {
 */
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
     BDD_ID aANDb = ite(a, b, Manager::False());
-    BDD_Var_Table[aANDb].label = "(" + BDD_Var_Table[a].label + " * " + BDD_Var_Table[b].label + ")";
+    strncpy(BDD_Var_Table[aANDb].label, ("(" + std::string(BDD_Var_Table[a].label) + " * " + std::string(BDD_Var_Table[b].label) + ")").c_str(), sizeof(BDD_Var_Table[aANDb].label));
     return aANDb;
 
 }
@@ -227,7 +227,7 @@ BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
 */
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
     BDD_ID aORb = ite(a, Manager::True(), b);
-    BDD_Var_Table[aORb].label = "(" + BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label + ")";
+    strncpy(BDD_Var_Table[aORb].label, ("(" + std::string(BDD_Var_Table[a].label) + " + " + std::string(BDD_Var_Table[b].label) + ")").c_str(), sizeof(BDD_Var_Table[aORb].label));
     return aORb;
 }
 
@@ -238,7 +238,7 @@ BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
 */
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){
     BDD_ID aXORb = ite(a, neg(b), b);
-    BDD_Var_Table[aXORb].label = "(" + BDD_Var_Table[a].label + " ^ " + BDD_Var_Table[b].label + ")";
+    strncpy(BDD_Var_Table[aXORb].label , ("(" + std::string(BDD_Var_Table[a].label) + " ^ " + std::string(BDD_Var_Table[b].label) + ")").c_str(), sizeof(BDD_Var_Table[aXORb].label));
     return aXORb;
 }
 
@@ -250,7 +250,7 @@ BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){
 BDD_ID Manager::neg(BDD_ID a){
     
     BDD_ID aNEG = ite(a, Manager::False(), Manager::True());
-    BDD_Var_Table[aNEG].label = "!" + BDD_Var_Table[a].label;
+    strncpy(BDD_Var_Table[aNEG].label , ("!" + std::string(BDD_Var_Table[a].label)).c_str(), sizeof(BDD_Var_Table[aNEG].label));
     return aNEG;
 }
 
@@ -262,7 +262,7 @@ BDD_ID Manager::neg(BDD_ID a){
 BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){
 
     BDD_ID aNANDb = neg(and2(a, b));
-    BDD_Var_Table[aNANDb].label = "(" + BDD_Var_Table[a].label + " * " + BDD_Var_Table[b].label + ")'";
+    strncpy(BDD_Var_Table[aNANDb].label, ("(" + std::string(BDD_Var_Table[a].label) + " * " + std::string(BDD_Var_Table[b].label) + ")'").c_str(), sizeof(BDD_Var_Table[aNANDb].label));
     return aNANDb;
 
 }
@@ -274,7 +274,7 @@ BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){
 */
 BDD_ID Manager::nor2(BDD_ID a, BDD_ID b){
     BDD_ID aNORb = neg(or2(a, b));
-    BDD_Var_Table[aNORb].label = "(" + BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label + ")'";
+    strncpy(BDD_Var_Table[aNORb].label , ("(" + std::string(BDD_Var_Table[a].label) + " + " + std::string(BDD_Var_Table[b].label) + ")'").c_str(), sizeof(BDD_Var_Table[aNORb].label));
     return aNORb;
 }
 
@@ -287,7 +287,7 @@ BDD_ID Manager::nor2(BDD_ID a, BDD_ID b){
 BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
  
     BDD_ID aXNORb = neg(xor2(a, b));
-    BDD_Var_Table[aXNORb].label = "(" + BDD_Var_Table[a].label + " ^ " + BDD_Var_Table[b].label + ")'";
+    strncpy(BDD_Var_Table[aXNORb].label , ("(" + std::string(BDD_Var_Table[a].label) + " ^ " + std::string(BDD_Var_Table[b].label) + ")'").c_str(), sizeof(BDD_Var_Table[aXNORb].label));
     return aXNORb;
 }
 

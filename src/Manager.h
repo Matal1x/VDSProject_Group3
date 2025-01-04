@@ -10,12 +10,13 @@
 #include <iostream>
 #include <fstream>
 #include <unordered_map>
+#include <cstring>
 
 namespace ClassProject {
 	typedef struct
 	{
 		BDD_ID id;
-		std::string label;
+		char label[48];
 		BDD_ID high;
 		BDD_ID low;
 		BDD_ID top_var;
