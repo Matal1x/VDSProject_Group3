@@ -7,16 +7,23 @@ namespace ClassProject {
 */
 BDD_ID Manager::createVar(const std::string &label){
     
-    for (const auto &node : BDD_Var_Table){
-        if (node.label == label){
-            return node.id;
+    #ifdef INCLUDE_LABELS
+        for (const auto &node : BDD_Var_Table){
+            if (node.label == label){
+                return node.id;
+            }
         }
-    }
-    
+    #endif
+
     BDD_Var new_var;
     new_var.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
-    strncpy(new_var.label , label.c_str(), sizeof(new_var.label)-1);
-    
+    #ifdef INCLUDE_LABELS
+        #ifdef INCLUDE_STRING_LABEL
+            new_var.label = label;
+        #else
+            strncpy(new_var.label , label.c_str(), sizeof(new_var.label)-1);
+        #endif
+    #endif
     new_var.high = this->True(); 
     new_var.low = this->False();
     new_var.top_var = static_cast<BDD_ID>(Manager::uniqueTableSize()); 
@@ -149,7 +156,13 @@ BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
     //std::cout << "         CREATED VAR" << std::endl;
     BDD_Var R;
     R.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
-    strncpy(R.label, ("id" + std::to_string(R.id)).c_str(), sizeof(R.label) - 1);
+    #ifdef INCLUDE_LABELS
+        #ifdef INCLUDE_STRING_LABEL
+            R.label = "id"+std::to_string(R.id);
+        #else    
+            strncpy(R.label, ("id" + std::to_string(R.id)).c_str(), sizeof(R.label) - 1);
+        #endif
+    #endif
     R.high = T;
     R.low = E;
     R.top_var = x;
@@ -215,7 +228,13 @@ size_t Manager::uniqueTableSize() {
 */
 BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
     BDD_ID aANDb = ite(a, b, Manager::False());
-    strncpy(BDD_Var_Table[aANDb].label, ("(" + std::string(BDD_Var_Table[a].label) + " * " + std::string(BDD_Var_Table[b].label) + ")").c_str(), sizeof(BDD_Var_Table[aANDb].label));
+    #ifdef INCLUDE_LABELS
+        #ifdef INCLUDE_STRING_LABEL
+            BDD_Var_Table[aANDb].label = "(" + BDD_Var_Table[a].label + " * " + BDD_Var_Table[b].label + ")";
+        #else    
+            strncpy(BDD_Var_Table[aANDb].label, ("(" + std::string(BDD_Var_Table[a].label) + " * " + std::string(BDD_Var_Table[b].label) + ")").c_str(), sizeof(BDD_Var_Table[aANDb].label));
+        #endif
+    #endif
     return aANDb;
 
 }
@@ -227,7 +246,13 @@ BDD_ID Manager::and2(BDD_ID a, BDD_ID b){
 */
 BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
     BDD_ID aORb = ite(a, Manager::True(), b);
-    strncpy(BDD_Var_Table[aORb].label, ("(" + std::string(BDD_Var_Table[a].label) + " + " + std::string(BDD_Var_Table[b].label) + ")").c_str(), sizeof(BDD_Var_Table[aORb].label));
+    #ifdef INCLUDE_LABELS
+        #ifdef INCLUDE_STRING_LABEL
+            BDD_Var_Table[aORb].label = "(" + BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label + ")";
+        #else
+            strncpy(BDD_Var_Table[aORb].label, ("(" + std::string(BDD_Var_Table[a].label) + " + " + std::string(BDD_Var_Table[b].label) + ")").c_str(), sizeof(BDD_Var_Table[aORb].label));
+        #endif
+    #endif
     return aORb;
 }
 
@@ -238,7 +263,13 @@ BDD_ID Manager::or2(BDD_ID a, BDD_ID b){
 */
 BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){
     BDD_ID aXORb = ite(a, neg(b), b);
-    strncpy(BDD_Var_Table[aXORb].label , ("(" + std::string(BDD_Var_Table[a].label) + " ^ " + std::string(BDD_Var_Table[b].label) + ")").c_str(), sizeof(BDD_Var_Table[aXORb].label));
+    #ifdef INCLUDE_LABELS
+        #ifdef INCLUDE_STRING_LABEL
+            BDD_Var_Table[aXORb].label = "(" + BDD_Var_Table[a].label + " ^ " + BDD_Var_Table[b].label + ")";
+        #else
+            strncpy(BDD_Var_Table[aXORb].label , ("(" + std::string(BDD_Var_Table[a].label) + " ^ " + std::string(BDD_Var_Table[b].label) + ")").c_str(), sizeof(BDD_Var_Table[aXORb].label));
+        #endif
+    #endif
     return aXORb;
 }
 
@@ -250,7 +281,13 @@ BDD_ID Manager::xor2(BDD_ID a, BDD_ID b){
 BDD_ID Manager::neg(BDD_ID a){
     
     BDD_ID aNEG = ite(a, Manager::False(), Manager::True());
-    strncpy(BDD_Var_Table[aNEG].label , ("!" + std::string(BDD_Var_Table[a].label)).c_str(), sizeof(BDD_Var_Table[aNEG].label));
+    #ifdef INCLUDE_LABELS
+        #ifdef INCLUDE_STRING_LABEL
+            BDD_Var_Table[aNEG].label = "!" + BDD_Var_Table[a].label;
+        #else
+            strncpy(BDD_Var_Table[aNEG].label , ("!" + std::string(BDD_Var_Table[a].label)).c_str(), sizeof(BDD_Var_Table[aNEG].label));
+        #endif
+    #endif
     return aNEG;
 }
 
@@ -262,7 +299,13 @@ BDD_ID Manager::neg(BDD_ID a){
 BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){
 
     BDD_ID aNANDb = neg(and2(a, b));
-    strncpy(BDD_Var_Table[aNANDb].label, ("(" + std::string(BDD_Var_Table[a].label) + " * " + std::string(BDD_Var_Table[b].label) + ")'").c_str(), sizeof(BDD_Var_Table[aNANDb].label));
+    #ifdef INCLUDE_LABELS
+        #ifdef INCLUDE_STRING_LABEL
+            BDD_Var_Table[aNANDb].label = "(" + BDD_Var_Table[a].label + " * " + BDD_Var_Table[b].label + ")'";
+        #else
+            strncpy(BDD_Var_Table[aNANDb].label, ("(" + std::string(BDD_Var_Table[a].label) + " * " + std::string(BDD_Var_Table[b].label) + ")'").c_str(), sizeof(BDD_Var_Table[aNANDb].label));
+        #endif
+    #endif
     return aNANDb;
 
 }
@@ -274,7 +317,13 @@ BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){
 */
 BDD_ID Manager::nor2(BDD_ID a, BDD_ID b){
     BDD_ID aNORb = neg(or2(a, b));
-    strncpy(BDD_Var_Table[aNORb].label , ("(" + std::string(BDD_Var_Table[a].label) + " + " + std::string(BDD_Var_Table[b].label) + ")'").c_str(), sizeof(BDD_Var_Table[aNORb].label));
+    #ifdef INCLUDE_LABELS   
+        #ifdef INCLUDE_STRING_LABEL
+            BDD_Var_Table[aNORb].label = "(" + BDD_Var_Table[a].label + " + " + BDD_Var_Table[b].label + ")'";
+        #else    
+            strncpy(BDD_Var_Table[aNORb].label , ("(" + std::string(BDD_Var_Table[a].label) + " + " + std::string(BDD_Var_Table[b].label) + ")'").c_str(), sizeof(BDD_Var_Table[aNORb].label));
+        #endif    
+    #endif
     return aNORb;
 }
 
@@ -287,7 +336,13 @@ BDD_ID Manager::nor2(BDD_ID a, BDD_ID b){
 BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
  
     BDD_ID aXNORb = neg(xor2(a, b));
-    strncpy(BDD_Var_Table[aXNORb].label , ("(" + std::string(BDD_Var_Table[a].label) + " ^ " + std::string(BDD_Var_Table[b].label) + ")'").c_str(), sizeof(BDD_Var_Table[aXNORb].label));
+    #ifdef INCLUDE_LABELS
+        #ifdef INCLUDE_STRING_LABEL
+            BDD_Var_Table[aXNORb].label = "(" + BDD_Var_Table[a].label + " ^ " + BDD_Var_Table[b].label + ")'";
+        #else
+            strncpy(BDD_Var_Table[aXNORb].label , ("(" + std::string(BDD_Var_Table[a].label) + " ^ " + std::string(BDD_Var_Table[b].label) + ")'").c_str(), sizeof(BDD_Var_Table[aXNORb].label));
+        #endif
+    #endif
     return aXNORb;
 }
 
@@ -296,7 +351,11 @@ BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){
     Returns the label of the top variable of the given node.
 */
 std::string Manager::getTopVarName(const BDD_ID &root) {
-    return BDD_Var_Table[topVar(root)].label;
+    #ifdef INCLUDE_LABELS
+        return BDD_Var_Table[topVar(root)].label;
+    #else
+        return "";
+    #endif
 }
 
 /*
@@ -356,8 +415,9 @@ void Manager::visualizeBDD(std::string filepath, BDD_ID &root) {
 
     for (const auto &node : nodes) {
            if(node!=0 && node!=1){
-            file << "    " << node << " [label=\"" << BDD_Var_Table[BDD_Var_Table[node].top_var].label << "\"];" << std::endl;
-        
+            #ifdef INCLUDE_LABELS
+                file << "    " << node << " [label=\"" << BDD_Var_Table[BDD_Var_Table[node].top_var].label << "\"];" << std::endl;
+            #endif
             file << "    " << node << " -> " << high << " [style=solid];" << std::endl;
             file << "    " << node << " -> " << low << " [style=dotted];" << std::endl;
         }

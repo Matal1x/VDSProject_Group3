@@ -5,6 +5,9 @@
 #ifndef VDSPROJECT_MANAGER_H
 #define VDSPROJECT_MANAGER_H
 
+//#define INCLUDE_LABELS
+//#define INCLUDE_STRING_LABEL
+
 #include "ManagerInterface.h"
 #include <vector>
 #include <iostream>
@@ -16,7 +19,13 @@ namespace ClassProject {
 	typedef struct
 	{
 		BDD_ID id;
-		char label[48];
+		#ifdef INCLUDE_LABELS
+			#ifdef INCLUDE_STRING_LABEL
+				std::string label;
+			#else
+				char label[24];
+			#endif
+		#endif
 		BDD_ID high;
 		BDD_ID low;
 		BDD_ID top_var;
@@ -50,8 +59,14 @@ namespace ClassProject {
 		
 		public:
 		Manager(){
-			BDD_Var_Table.push_back({0, "False", 0, 0, 0});
-			BDD_Var_Table.push_back({1, "True", 1, 1, 1});
+
+			#ifdef INCLUDE_LABELS
+				BDD_Var_Table.push_back({0, "False", 0, 0, 0});
+				BDD_Var_Table.push_back({1, "True", 1, 1, 1});
+			#else
+				BDD_Var_Table.push_back({0, 0, 0, 0});
+				BDD_Var_Table.push_back({1, 1, 1, 1});
+			#endif		
 		}
 
         BDD_ID createVar(const std::string &label);
