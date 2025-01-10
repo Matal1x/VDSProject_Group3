@@ -48,14 +48,12 @@ namespace ClassProject {
 	};
 
 
-
-
 	class Manager : public ManagerInterface {
 
 		
 		std::vector<BDD_Var> BDD_Var_Table;
-		std::unordered_map<Triplet, BDD_ID, HashTriplet> computed_table;
-		std::unordered_map<Triplet, BDD_ID, HashTriplet> optimizedTable;
+		std::unordered_map<Triplet, BDD_ID, HashTriplet> Computed_Table;
+		std::unordered_map<Triplet, BDD_ID, HashTriplet> Optimized_Table;
 		
 		public:
 		Manager(){

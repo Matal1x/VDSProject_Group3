@@ -32,7 +32,7 @@ BDD_ID Manager::createVar(const std::string &label){
 
     // Adding to the fast hash table
     Triplet key = {new_var.high, new_var.low, new_var.top_var};
-    optimizedTable[key] = new_var.id;
+    Optimized_Table[key] = new_var.id;
 
     return new_var.id;
 }
@@ -102,12 +102,10 @@ BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
         return G; 
     } 
     
-    Triplet tri;
-    tri.F=F; tri.G=G; tri.H=H;
+    Triplet tri{F,G,H};
 
-    auto checking = computed_table.find(tri);
-    if ( checking != computed_table.end()){
-        //std::cout << "         FOUND ONE IN CT (emplace)" << std::endl;
+    auto checking = Computed_Table.find(tri);
+    if ( checking != Computed_Table.end()){
         return checking->second;
     }
 
@@ -126,7 +124,7 @@ BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
 
     BDD_ID ct_f=Manager::coFactorTrue(F, x), ct_g=Manager::coFactorTrue(G, x), ct_h=Manager::coFactorTrue(H, x);
     T = ite(ct_f, ct_g, ct_h);
-    computed_table[{ct_f, ct_g, ct_h}] = T;
+    Computed_Table[{ct_f, ct_g, ct_h}] = T;
 
     BDD_ID cf_f=Manager::coFactorFalse(F, x), cf_g=Manager::coFactorFalse(G, x), cf_h=Manager::coFactorFalse(H, x);
     E = ite(cf_f, cf_g, cf_h);
@@ -136,24 +134,14 @@ BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
         return T;
     }
     // Putting it here just in case T=E
-    computed_table[{cf_f, cf_g, cf_h}] = E;
-
-    // for (const auto &node : BDD_Var_Table){
-         
-    //     if ( (node.high == T) && (node.low == E) && (node.top_var == x) ){
-    //       //std::cout << "Found" << std::endl;
-    //         return node.id;
-    //     }
-    // }
+    Computed_Table[{cf_f, cf_g, cf_h}] = E;
 
     Triplet key = {T,E,x};
-    auto it = optimizedTable.find(key);
-    if (it != optimizedTable.end()) {
-        //std::cout << "found one in ot" << std::endl;
+    auto it = Optimized_Table.find(key);
+    if (it != Optimized_Table.end()) {
         return it->second; // Return existing ID
     }
 
-    //std::cout << "         CREATED VAR" << std::endl;
     BDD_Var R;
     R.id = static_cast<BDD_ID>(Manager::uniqueTableSize());
     #ifdef INCLUDE_LABELS
@@ -166,9 +154,9 @@ BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
     R.high = T;
     R.low = E;
     R.top_var = x;
-    BDD_Var_Table.push_back(R);
-    computed_table[tri] = R.id;
-    optimizedTable[key] = R.id;
+    BDD_Var_Table.emplace_back(R);
+    Computed_Table[tri] = R.id;
+    Optimized_Table[key] = R.id;
     return R.id;
     
 }
@@ -371,7 +359,6 @@ void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
     }
     
     nodes_of_root.insert(BDD_Var_Table[root].id);
-    std::cout << BDD_Var_Table[root].id << std::endl;
     findNodes(BDD_Var_Table[root].high, nodes_of_root);
     findNodes(BDD_Var_Table[root].low, nodes_of_root);
 }
@@ -387,7 +374,6 @@ void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root){
     for (const auto &node : nodes_of_root){
        if(node!=0 && node!=1)
         vars_of_root.insert(topVar(node));
-    
     }
 }
 
