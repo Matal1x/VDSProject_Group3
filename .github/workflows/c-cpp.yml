@@ -1,0 +1,54 @@
+# This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
+name: CMake on a single platform
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Clean Build Directory
+      run: rm -rf ${{github.workspace}}/build
+    
+    - name: Install Boost
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libboost-all-dev
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Run CTest
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}}
+
+    - name: Run Google Tests
+      run: |
+        if [ -f ${{github.workspace}}/build/src/test/VDSProject_test ]; then
+          chmod +x ${{github.workspace}}/build/src/test/VDSProject_test
+          ${{github.workspace}}/build/src/test/VDSProject_test
+        else
+          echo "Test binary not found!"
+          exit 1
+        fi
+        if[ -f ${{github.workspace}}/build/VDSProject_reachability ]; then
+          chmod +x ${{github.workspace}}/build/VDSProject_reachability
+          ${{github.workspace}}/build/VDSProject_reachability
+        else
+          echo " Reachability test binary not found!"
+          exit 1
+        fi
