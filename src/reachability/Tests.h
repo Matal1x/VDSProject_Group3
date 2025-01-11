@@ -22,6 +22,7 @@ TEST_F(ReachabilityTest, HowTo_Example) { /* NOLINT */
 
     transitionFunctions.push_back(fsm2->neg(s0)); // s0' = not(s0)
     transitionFunctions.push_back(fsm2->neg(s1)); // s1' = not(s1)
+
     fsm2->setTransitionFunctions(transitionFunctions);
 
     fsm2->setInitState({false,false});

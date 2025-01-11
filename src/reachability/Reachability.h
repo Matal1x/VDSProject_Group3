@@ -2,12 +2,34 @@
 #define VDSPROJECT_REACHABILITY_H
 
 #include "ReachabilityInterface.h"
+#include "../Manager.h"
 
 namespace ClassProject {
 
-//    class Reachability : public ReachabilityInterface {
-//
-//    };
+    class Reachability : public ReachabilityInterface {
+
+        private: 
+
+            std::vector<BDD_ID> stateVars;
+            std::vector<BDD_ID> nextStateVars;
+            std::vector<BDD_ID> inputVars;
+            std::vector<BDD_ID> transitionFunctions;
+            std::vector<bool> initState;
+
+        public:
+            Reachability(unsigned int stateSize, unsigned int inputSize = 0);
+
+            const std::vector<BDD_ID> &getStates() const ;
+            const std::vector<BDD_ID> &getInputs() const ;
+            bool isReachable(const std::vector<bool> &stateVector);
+            int stateDistance(const std::vector<bool> &stateVector);
+            void setTransitionFunctions(const std::vector<BDD_ID> &transitionFunctions);
+            void setInitState(const std::vector<bool> &stateVector);
+            
+
+    
+    
+    };
 
 }
 #endif

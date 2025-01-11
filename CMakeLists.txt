@@ -66,3 +66,9 @@ target_link_libraries(VDSProject_bench ${Boost_LIBRARIES})
 
 add_subdirectory(src/verify)
 add_executable(VDSProject_verify src/verify/main_verify.cpp)
+
+#third part
+add_subdirectory(src/reachability)
+add_executable(VDSProject_reachability src/reachability/main_test.cpp src/reachability/Reachability.cpp src/reachability/Reachability.h src/reachability/Tests.h src/reachability/ReachabilityInterface.h)
+target_link_libraries(VDSProject_reachability Manager)
+target_link_libraries(VDSProject_reachability gtest gtest_main pthread)
