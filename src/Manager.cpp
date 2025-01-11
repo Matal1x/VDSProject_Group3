@@ -8,9 +8,10 @@ namespace ClassProject {
 BDD_ID Manager::createVar(const std::string &label){
     
     #ifdef INCLUDE_LABELS
-        for (const auto &node : BDD_Var_Table){
-            if (node.label == label){
-                return node.id;
+        auto &vector_index = bdd_table.get<0>();
+        for (const auto &elem : vector_index) {
+            if (elem.label == label){
+                return elem.id;
             }
         }
     #endif
@@ -28,11 +29,7 @@ BDD_ID Manager::createVar(const std::string &label){
     new_var.low = this->False();
     new_var.top_var = static_cast<BDD_ID>(Manager::uniqueTableSize()); 
      
-    BDD_Var_Table.push_back(new_var);
-
-    // Adding to the fast hash table
-    Triplet key = {new_var.high, new_var.low, new_var.top_var};
-    optimizedTable[key] = new_var.id;
+    bdd_table.push_back(new_var);
 
     return new_var.id;
 }
@@ -71,7 +68,8 @@ bool Manager::isVariable(BDD_ID f){
     Returns the top variable of a given node.
 */
 BDD_ID Manager::topVar(BDD_ID f){
-    return BDD_Var_Table[f].top_var;  
+    auto &elem = bdd_table.get<0>()[f];
+    return elem.top_var;  
 }
 
 
@@ -147,10 +145,11 @@ BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
     // }
 
     Triplet key = {T,E,x};
-    auto it = optimizedTable.find(key);
-    if (it != optimizedTable.end()) {
+    auto &hash_index = bdd_table.get<1>();
+    auto it = hash_index.find(boost::make_tuple(T,E,x));
+    if (it != hash_index.end()) {
         //std::cout << "found one in ot" << std::endl;
-        return it->second; // Return existing ID
+        return it->id; // Return existing ID
     }
 
     //std::cout << "         CREATED VAR" << std::endl;
@@ -166,9 +165,8 @@ BDD_ID Manager::ite(BDD_ID F, BDD_ID G, BDD_ID H){
     R.high = T;
     R.low = E;
     R.top_var = x;
-    BDD_Var_Table.push_back(R);
+    bdd_table.push_back(R);
     computed_table[tri] = R.id;
-    optimizedTable[key] = R.id;
     return R.id;
     
 }
@@ -178,10 +176,11 @@ BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x){
         return f;
     }
     else {
-        if (topVar(f) == x){
-            return BDD_Var_Table[f].high;
+        auto &elem = bdd_table.get<0>()[f];
+        if (topVar(f) == x){      
+            return elem.high;
         }
-        return ite(topVar(f), coFactorTrue(BDD_Var_Table[f].high, x), coFactorTrue(BDD_Var_Table[f].low, x));
+        return ite(topVar(f), coFactorTrue(elem.high, x), coFactorTrue(elem.low, x));
     }
 }
 
@@ -190,10 +189,11 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
         return f;
     }
     else {
+        auto &elem = bdd_table.get<0>()[f];
         if (topVar(f) == x){
-            return BDD_Var_Table[f].low;
+            return elem.low;
         }
-        return ite(topVar(f), coFactorFalse(BDD_Var_Table[f].high, x), coFactorFalse(BDD_Var_Table[f].low, x));
+        return ite(topVar(f), coFactorFalse(elem.high, x), coFactorFalse(elem.low, x));
     } 
 }
 
@@ -202,7 +202,8 @@ BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x){
     returns the high successor of the given node.
 */
 BDD_ID Manager::coFactorTrue(BDD_ID f){
-    return BDD_Var_Table[f].high;
+    auto &elem = bdd_table.get<0>()[f];
+    return elem.high;
 }
 
 /*
@@ -210,7 +211,8 @@ BDD_ID Manager::coFactorTrue(BDD_ID f){
     returns the low successor of the given node.
 */
 BDD_ID Manager::coFactorFalse(BDD_ID f){
-    return BDD_Var_Table[f].low;
+    auto &elem = bdd_table.get<0>()[f];
+    return elem.low;
 }
 
 /*
@@ -218,7 +220,7 @@ BDD_ID Manager::coFactorFalse(BDD_ID f){
     ie. the number of unique nodes in the BDD.
 */
 size_t Manager::uniqueTableSize() {
-    return Manager::BDD_Var_Table.size();
+    return Manager::bdd_table.size();
 }
 
 /*
@@ -369,11 +371,11 @@ void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root){
     if(nodes_of_root.find(root) != nodes_of_root.end()){
         return;
     }
-    
-    nodes_of_root.insert(BDD_Var_Table[root].id);
-    std::cout << BDD_Var_Table[root].id << std::endl;
-    findNodes(BDD_Var_Table[root].high, nodes_of_root);
-    findNodes(BDD_Var_Table[root].low, nodes_of_root);
+    auto &elem = bdd_table.get<0>()[root];
+    nodes_of_root.insert(elem.id);
+    //std::cout << elem.id << std::endl;
+    findNodes(elem.high, nodes_of_root);
+    findNodes(elem.low, nodes_of_root);
 }
 
 /*  
