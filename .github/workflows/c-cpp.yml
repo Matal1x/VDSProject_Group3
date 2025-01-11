@@ -36,7 +36,7 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: ctest -C ${{env.BUILD_TYPE}}
 
-    - name: Run Google Tests
+    - name: Run BDD Tests
       run: |
         if [ -f ${{github.workspace}}/build/src/test/VDSProject_test ]; then
           chmod +x ${{github.workspace}}/build/src/test/VDSProject_test
@@ -45,6 +45,8 @@ jobs:
           echo "Test binary not found!"
           exit 1
         fi
+    - name: Run Reachability Tests
+      run: |
         if[ -f ${{github.workspace}}/build/VDSProject_reachability ]; then
           chmod +x ${{github.workspace}}/build/VDSProject_reachability
           ${{github.workspace}}/build/VDSProject_reachability
