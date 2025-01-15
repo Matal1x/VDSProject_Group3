@@ -79,6 +79,10 @@ bool Reachability::isReachable(const std::vector<bool> &stateVector) {
         for(int i = nextStateVars.size() - 1 ; i >= 0 ; i--){
             currentImg = or2(coFactorTrue(currentImg,nextStateVars[i]), coFactorFalse(currentImg,nextStateVars[i]));
         }
+        // cofactoring w.r.t inputs
+        for(int i = 0 ; i < inputVars.size(); i++){
+            currentImg = or2(coFactorTrue(currentImg,inputVars[i]), coFactorFalse(currentImg,inputVars[i]));
+        }
         std::cout << "step 8 done " << std::endl;
         //Step 9
         CRit = or2(CR, currentImg);

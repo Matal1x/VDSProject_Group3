@@ -14,6 +14,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <cstring>
+#include <ankerl/unordered_dense.h>
 
 namespace ClassProject {
 	typedef struct
@@ -52,8 +53,8 @@ namespace ClassProject {
 
 		
 		std::vector<BDD_Var> BDD_Var_Table;
-		std::unordered_map<Triplet, BDD_ID, HashTriplet> Computed_Table;
-		std::unordered_map<Triplet, BDD_ID, HashTriplet> Optimized_Table;
+		ankerl::unordered_dense::map<Triplet, BDD_ID, HashTriplet> Computed_Table;
+		ankerl::unordered_dense::map<Triplet, BDD_ID, HashTriplet> Optimized_Table;
 		
 		public:
 		Manager(){
