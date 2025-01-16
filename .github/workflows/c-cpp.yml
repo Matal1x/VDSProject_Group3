@@ -17,14 +17,25 @@ jobs:
 
     - name: Clean Build Directory
       run: rm -rf ${{github.workspace}}/build
-    
+
     - name: Install Boost
       run: |
         sudo apt-get update
         sudo apt-get install -y libboost-all-dev
 
+    - name: Add and Install unordered_dense Library Globally
+      run: |
+        git clone https://github.com/martinus/unordered_dense.git ${{github.workspace}}/third_party/unordered_dense
+        mkdir -p ${{github.workspace}}/third_party/unordered_dense/build
+        cd ${{github.workspace}}/third_party/unordered_dense/build
+        cmake ..
+        sudo mkdir -p /usr/local/lib/cmake/unordered_dense
+        sudo cmake --build . --target install
+
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: |
+        cmake -B ${{github.workspace}}/build \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
