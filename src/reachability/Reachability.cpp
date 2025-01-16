@@ -15,11 +15,10 @@ Reachability::Reachability(unsigned int stateSize, unsigned int inputSize)
         stateVars.push_back(createVar("s" + std::to_string(i)));
         nextStateVars.push_back(createVar("s" + std::to_string(i) + "'")); 
         //Step 2  
-        transitionFunctions.push_back(nextStateVars[i]);
+        transitionFunctions.push_back(stateVars[i]);
         initState.push_back(False());
     }
 
-    std::cout << "step1 and 2 done " << std::endl;
     for (unsigned int i = 0; i < inputSize; i++) {
         inputVars.push_back(createVar("i" + std::to_string(i)));
     }
@@ -42,71 +41,10 @@ bool Reachability::isReachable(const std::vector<bool> &stateVector) {
         throw std::runtime_error("size does not match with number of state bits");
     }
 
-    //Step 3
-    BDD_ID tao = True();
-    for(unsigned int i = 0; i < stateVars.size(); i++) {
-        tao = and2(tao, xnor2(nextStateVars[i], transitionFunctions[i]));
-    }
-    std::cout << "step 3 done " << std::endl;
-    //Step 4
-    BDD_ID Cs = True();
-    for(unsigned int i = 0; i < stateVars.size(); i++) {
-        Cs = and2(Cs, xnor2(stateVars[i], initState[i]));
-    }
-    std::cout << "step 4 done " << std::endl;
-
-    //Step 5
-    BDD_ID CRit = Cs;
-    std::cout << "step 5 done " << std::endl;
-    BDD_ID CR, nextImg, currentImg;
-    do {
-        
-        //Step 6
-        CR = CRit;
-        std::cout << "step 6 done " << std::endl;
-        //Step 7
-        nextImg = and2(CR, tao);
-        std::cout << "step7 and done " << std::endl;
-        for(int i = stateVars.size() - 1; i >= 0; i--) {
-            nextImg = or2(coFactorTrue(nextImg, stateVars[i]), coFactorFalse(nextImg, stateVars[i]));
-        }
-        std::cout << "step 7 loop done " << std::endl;
-        //Step 8
-        currentImg = nextImg;
-        for(int i = 0 ; i < stateVars.size(); i++) {
-            currentImg = and2(currentImg,xnor2(stateVars[i], nextStateVars[i]));
-        }
-        for(int i = nextStateVars.size() - 1 ; i >= 0 ; i--){
-            currentImg = or2(coFactorTrue(currentImg,nextStateVars[i]), coFactorFalse(currentImg,nextStateVars[i]));
-        }
-        // cofactoring w.r.t inputs
-        for(int i = 0 ; i < inputVars.size(); i++){
-            currentImg = or2(coFactorTrue(currentImg,inputVars[i]), coFactorFalse(currentImg,inputVars[i]));
-        }
-        std::cout << "step 8 done " << std::endl;
-        //Step 9
-        CRit = or2(CR, currentImg);
-        std::cout << "step 9 done " << std::endl;
-        //Step 10
-    } while (CR != CRit);
-    std::cout << "step 10 done " << std::endl;
-    //Step 11
-    BDD_ID reachable = CR;
-    
-    for(unsigned int i = 0; i < stateVector.size(); i++) {
-        std::cout << "reachable: " << reachable << std::endl;
-        std::cout << "stateVector["<< i<< "] = "<<  stateVector[i] <<std::endl;
-        if (stateVector[i] == true) {
-            reachable = coFactorTrue(reachable, stateVars[i]);
-        } else {
-            reachable = coFactorFalse(reachable, stateVars[i]);
-        }
-    }
-    std::cout << "step 11 done " << std::endl;
-    std::cout << "reachable: " << reachable << std::endl;
-   if(reachable == True()) {
+   if(stateDistance(stateVector) != -1){
        return true;
-   } else {
+   } 
+   else {
        return false;
    }    
 
@@ -117,6 +55,11 @@ int Reachability::stateDistance(const std::vector<bool> &stateVector) {
     if (stateVector.size() != stateVars.size()) {
         throw std::runtime_error("size does not match with number of state bits");
     }
+    if (stateVector==initState)
+    {
+        return 0;
+    }
+    
 
     // Step 3
     BDD_ID tao = True();
@@ -153,11 +96,13 @@ int Reachability::stateDistance(const std::vector<bool> &stateVector) {
         for (int i = nextStateVars.size() - 1; i >= 0; i--) {
             currentImg = or2(coFactorTrue(currentImg, nextStateVars[i]), coFactorFalse(currentImg, nextStateVars[i]));
         }
-
+        //
+        for(int i = 0 ; i < inputVars.size(); i++){
+            currentImg = or2(coFactorTrue(currentImg,inputVars[i]), coFactorFalse(currentImg,inputVars[i]));
+        }
         // Step 9
         CRit = or2(CR, currentImg);
         distance++;
-
         // Check if the stateVector is reachable at this distance
         BDD_ID reachable = CRit;
         for (unsigned int i = 0; i < stateVector.size(); i++) {
@@ -168,6 +113,7 @@ int Reachability::stateDistance(const std::vector<bool> &stateVector) {
             }
         }
         if (reachable == True()) {
+
             return distance;
         }
 
@@ -184,8 +130,13 @@ void Reachability::setTransitionFunctions(const std::vector<BDD_ID> &transitionF
     }
 
     for(unsigned int i = 0; i < transitionFunctions.size(); i++) {
-        this->transitionFunctions[i] = transitionFunctions[i];
+
+        if(transitionFunctions[i]>= uniqueTableSize()){
+            throw std::runtime_error("An unknown ID is provided");
+        }
+        
     }
+    this->transitionFunctions = transitionFunctions;
 
 }
 
@@ -202,7 +153,6 @@ void Reachability::setInitState(const std::vector<bool> &stateVector) {
         }
     }
 }
-
 
 
 }

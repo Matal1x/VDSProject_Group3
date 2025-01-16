@@ -33,6 +33,7 @@ TEST_F(ReachabilityTest, HowTo_Example) { /* NOLINT */
     fsm1->setTransitionFunctions(transitionFunctions1);
 
     fsm1->setInitState({false,false});
+    ASSERT_EQ(fsm1->stateDistance({false, false}), 0);
 
     ASSERT_TRUE(fsm1->isReachable({false, false}));
     ASSERT_FALSE(fsm1->isReachable({false, true}));
@@ -51,6 +52,11 @@ TEST_F(ReachabilityTest, Lecture_Example){
     transitionFunctions2.push_back(fsm2->and2(fsm2->neg(x1), fsm2->or2(s1, s2)));
     // x2 (x1+S1+S@)
     transitionFunctions2.push_back(fsm2->and2(x2, fsm2->or2(fsm2->or2(x1, s1), s2)));
+
+    fsm2->setTransitionFunctions(transitionFunctions2);
+
+    ASSERT_EQ(fsm2->stateDistance({true, true}),  2);
+    ASSERT_EQ(fsm2->stateDistance({false, false}), 0);
 
     ASSERT_TRUE(fsm2->isReachable({true, true}));
     ASSERT_TRUE(fsm2->isReachable({true, false}));
