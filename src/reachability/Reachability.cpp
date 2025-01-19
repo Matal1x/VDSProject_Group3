@@ -40,13 +40,20 @@ bool Reachability::isReachable(const std::vector<bool> &stateVector) {
     if (stateVector.size() != stateVars.size()) {
         throw std::runtime_error("size does not match with number of state bits");
     }
-
-   if(stateDistance(stateVector) != -1){
-       return true;
-   } 
-   else {
-       return false;
-   }    
+    if(CRCalculated){
+        BDD_ID reachable = globalCR;
+        for (unsigned int i = 0; i < stateVector.size(); i++) {
+            if (stateVector[i] == true) {
+                reachable = coFactorTrue(reachable, stateVars[i]);
+            } else {
+                reachable = coFactorFalse(reachable, stateVars[i]);
+            }
+       }
+      return reachable != False();
+    }
+    else{
+        return stateDistance(stateVector) != -1;
+    }  
 
 }
 
@@ -77,6 +84,7 @@ int Reachability::stateDistance(const std::vector<bool> &stateVector) {
     BDD_ID CRit = Cs;
     BDD_ID CR, nextImg, currentImg;
     int distance = 0;
+    BDD_ID reachable = False();
 
     do {
         // Step 6
@@ -102,9 +110,11 @@ int Reachability::stateDistance(const std::vector<bool> &stateVector) {
         }
         // Step 9
         CRit = or2(CR, currentImg);
-        distance++;
+        if(reachable != True() ){
+            distance++;
+        }
         // Check if the stateVector is reachable at this distance
-        BDD_ID reachable = CRit;
+        reachable = CRit;
         for (unsigned int i = 0; i < stateVector.size(); i++) {
             if (stateVector[i] == true) {
                 reachable = coFactorTrue(reachable, stateVars[i]);
@@ -112,12 +122,17 @@ int Reachability::stateDistance(const std::vector<bool> &stateVector) {
                 reachable = coFactorFalse(reachable, stateVars[i]);
             }
         }
-        if (reachable == True()) {
+        if (reachable == True() && CRCalculated) {
 
             return distance;
         }
 
     } while (CR != CRit);
+    CRCalculated = true;
+    globalCR = CR;
+    if(reachable == True()){
+        return distance;
+    }
 
     // If the state is not reachable, return -1
     return -1;

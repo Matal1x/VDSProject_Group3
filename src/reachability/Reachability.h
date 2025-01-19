@@ -15,6 +15,8 @@ namespace ClassProject {
             std::vector<BDD_ID> inputVars;
             std::vector<BDD_ID> transitionFunctions;
             std::vector<bool> initState;
+            bool CRCalculated = false;
+            BDD_ID globalCR = False();
 
         public:
             Reachability(unsigned int stateSize, unsigned int inputSize = 0);
